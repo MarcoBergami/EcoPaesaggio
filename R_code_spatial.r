@@ -30,6 +30,3 @@ foram <- c(10, 20, 35, 55, 67, 80)
 carbon <- c(5, 15, 30, 70, 85, 99)
 plot(foram, carbon, col="green", cex=2, pch=19) # plottando possiamo notare la stretta correlazione tra le due variabili
 
-# DATI DALL'ESTERNO - COVID19
-setwd("C:/LAB") # specifichiamo ad R la cartella di Working Directory (wd). Attenzione a scrivere l'indirizzo con lo slash corrispondente al taso 7
-covid <- read.table("covid_agg.csv",head=TRUE)  # funzione per leggere la tabella inserita nella cartella LAB, impostando la prima riga come contenente i nomi delle colonne 
