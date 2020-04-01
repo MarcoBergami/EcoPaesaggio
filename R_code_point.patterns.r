@@ -26,7 +26,7 @@ ggplot(covid, aes(x=lon,y=lat,size=cases)) + geom_point() # plottiamo i punti de
 # DENSITY
 library(spatstat)
 attach(covid) # specifichiamo il database in cui sono presenti le variabili longitudine e latitudine
-covids <- ppp(lon, lat, c(-180,180), c(-90,90)) # creiamo il dataset covidS che, a differenza dell'altro, utilizziamo per l'analisi di densità
+covids <- ppp(lon, lat, c(-180,180), c(-90,90)) # creiamo l'oggetto covidS che, a differenza dell'altro, utilizziamo per l'analisi di densità
 d <- density(covids)
 plot(d)
 points(covids, pch=19) #vediamo anche i punti dei singoli paesi insieme alla mappa della densità
@@ -44,7 +44,7 @@ plot(d)
 points(covids,pch=19,cex=0.5)
 plot(coastlines, col="yellow", add=T) # plottiamo, insieme ai punti e alla densità (add=T), lo shapefile riguardante le coste a livello mondiale
 
-cl <- colorRampPalette(c('yellow','orange','red'))(100) # identifichiamo una scala di colori definita con l'oggetto cl
+cl <- colorRampPalette(c('yellow','orange','red'))(100) # identifichiamo una scala di colori definita con l'oggetto cl. (100) sta ad indicare il numero di gradazioni per singolo colore
 plot(d,col=cl) # riplottiamo d con la scala di colori scelta
 points(covids,pch=19,cex=0.5)
 plot(coastlines, col="blue", add=T)
