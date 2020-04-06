@@ -21,15 +21,15 @@ ggplot(mpg, aes(x=displ,y=hwy)) + geom_line() # cambiamo la geometira
 ggplot(mpg, aes(x=displ,y=hwy)) + geom_polygon()
 
 # ggplot di covid
-ggplot(covid, aes(x=lon,y=lat,size=cases)) + geom_point() # plottiamo i punti dei paesi ponendo le cordinate come x e y e la grandezza dei punti in relazione ai casi riscontrati
+ggplot(covid, aes(x=lon,y=lat,size=cases)) + geom_point() # plottiamo i punti dei paesi ponendo le cordinate come x e y e la grandezza dei punti in relazione al numero dei casi riscontrati
 
 # DENSITY
 library(spatstat)
 attach(covid) # specifichiamo il database in cui sono presenti le variabili longitudine e latitudine
 covids <- ppp(lon, lat, c(-180,180), c(-90,90)) # creiamo l'oggetto covidS che, a differenza dell'altro, utilizziamo per l'analisi di densità
-d <- density(covids)
-plot(d)
-points(covids, pch=19) #vediamo anche i punti dei singoli paesi insieme alla mappa della densità
+d <- density(covids) # chiamiamo "d" il risultato dell'analisi di densità su covids
+plot(d) # plottiamo il grafico di densità
+points(covids, pch=19) # inseriamo i punti dei singoli paesi insieme alla mappa della densità
 
 #COASTLINES
 library(spatstat)
