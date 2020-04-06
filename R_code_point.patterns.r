@@ -5,7 +5,7 @@ install.packages("spatstat")
 
 setwd("C:/LAB") # specifichiamo ad R la cartella di Working Directory (wd). Attenzione a scrivere l'indirizzo con lo slash corrispondente al taso 7
 covid <- read.table("covid_agg.csv",head=TRUE) # funzione per importare i dati del file, quindi visualizzare la tabella impostando la prima riga come contenente i nomi delle colonne 
-head(covid) # visualizziamo il numero di casi per ogni paese
+head(covid) 
 plot(covid$country,covid$cases) # se facessimo prima attach(covid) potremmo non utilizzare il simbolo $ per specificare l'attribuzione della singola colonna al dataset: plot(country,cases)
 plot(covid$country,covid$cases,las=0) # le etichette sno sempre scritte in modo parallelo agli assi x e y del grafico. Proviamo quindi con valori diversi da 0..
 plot(covid$country,covid$cases,las=1) # le etichette dell'asse y diventano perpendicolari
