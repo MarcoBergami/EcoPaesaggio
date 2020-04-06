@@ -1,7 +1,7 @@
 #PRIMO CODICE ECOLOGIA DEL PAESAGGIO
 install.packages("sp")
-data(meuse)
-library(sp)
+
+library(sp) # richiamiamo la libreria sp prima di .....
 data(meuse)
 meuse
 pairs(meuse)
