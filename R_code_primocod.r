@@ -7,9 +7,9 @@ meuse
 pairs(meuse)
 pairs(~ cadmium + copper + lead , data = meuse)
 pairs(~ cadmium + copper + lead + zinc , data = meuse)
-pairs(meuse[,3:6], col="red")
-pairs(meuse[,3:6], col="red", pch=19, cex=3)
-pairs(meuse[,3:6], col="red", pch=19, cex=3, main="Primo pairs")
+pairs(meuse[,3:6], col="red") # cambiamo colore
+pairs(meuse[,3:6], col="red", pch=19, cex=3) # cambiamo "point character" (simbolo grafico) e "character exageration" (grandezza simbolo)
+pairs(meuse[,3:6], col="red", pch=19, cex=3, main="Primo pairs") # inseriamo un titolo al grafico
 
 panel.correlations <- function(x, y, digits=1, prefix="", cex.cor)
 {
@@ -58,5 +58,5 @@ plot(meuse$cadmium , meuse$copper)
 attach(meuse)
 plot(cadmium,copper)
 plot(cadmium,copper, pch=17, col="green", main="primo plot")
-plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab="rame")
-plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab="rame", cex.lab=2, cex=2)
+plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab="rame") # cambiamo in nome delle etichette sugli assi del grafico
+plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab="rame", cex.lab=2, cex=2) # cambiamo grandezza delle etichette e dei simboli
