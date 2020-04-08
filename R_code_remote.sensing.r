@@ -33,7 +33,6 @@ clr <- colorRampPalette(c('dark red','red','pink'))(100) # il colore 'light red'
 plot(p224r63_2011$B3_sre,col=clr)
 clnir <- colorRampPalette(c('red','orange','yellow'))(100)
 plot(p224r63_2011$B4_sre,col=clnir)
-# ci sono molte piante perchè abbiamo alti valori di infrarosso mentre si hanno bassi valori di rosso e blu. il verde è in una situazione intermedia.
 
 dev.off() # per chiudere il device, ovvero la finestra del grafico
 
