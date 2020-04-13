@@ -5,7 +5,7 @@ library(raster)
 setwd("C:/LAB")
 
 p224r63_2011 <- brick("p224r63_2011_masked.grd") # assegnamo, tramite la funzione brick, un nome al file presente dentro la wd
-plot(p224r63_2011)
+plot(p224r63_2011) # visualizziamo le 7 immagini, una per ogni banda
 # B1: blue
 # B2: green
 # B3: red
