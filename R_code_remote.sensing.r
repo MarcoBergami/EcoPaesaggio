@@ -93,8 +93,7 @@ plot(difdvi, col=cldifdvi)
 dev.off()
 
 # Changing the grain (Resolution)
-p224r63_2011 # possiamo visualizzare na tura del file e la sua risoluzione
-p224r63_2011lr # lo stesso per la nuova risoluzione
+p224r63_2011 # possiamo visualizzare la natura del file e la sua risoluzione
 
 p224r63_2011lr <- aggregate(p224r63_2011, fact=10) # lr = low resolution con ingrandimento del pixel di 10 volte (media dei pixel originali contenuti nel nuovo pixel più grande)
 par(mfrow=c(2,1))
