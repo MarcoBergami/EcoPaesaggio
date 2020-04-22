@@ -48,3 +48,54 @@ cl <- colorRampPalette(c('yellow','orange','red'))(100) # identifichiamo una sca
 plot(d,col=cl) # riplottiamo d con la scala di colori scelta
 points(covids,pch=19,cex=0.5)
 plot(coastlines, col="blue", add=T)
+
+# Exercise 22/04/20
+library(spatstat)
+library(rgdal) 
+setwd("C:/LAB")
+load("point.pattern.RData")
+
+ls()
+coastlines <- readOGR("ne_10m_coastline.shp")
+cl2 <- colorRampPalette(c('red', 'white', 'blue')) (200) 
+plot(d, col=cl2, main="density")
+points(covids)
+plot(coastlines, add=T)
+
+# interpolation
+marks(covids) <- covid$cases
+i <- Smooth(covids) # i=interpolazione
+plot(i)
+
+plot(i, col=cl2, main="Interpolation: estimated number of cases")
+points(covids)
+plot(coastlines, add=T)
+
+# MAPPA FINALE - Multipanel
+par(mfrow=c(2,1))
+
+plot(d, col=cl2, main="density")
+points(covids)
+plot(coastlines, add=T)
+
+plot(i, col=cl2, main="Interpolation: estimated number of cases")
+points(covids)
+plot(coastlines, add=T)
+
+# DATI DI SAN MARINO
+load("Tesi.RData")
+ls()
+head(Tesi)
+attach(Tesi)
+
+# X varia da 12.42 a 12.46
+# y varia da 43.91 a 43.94
+# pointpattern: x,y,c(xmin,xmax),c(ymin,ymax)
+Tesippp <- ppp(Longitude, Latitude, c(12.41,12.47), c(43.9,43.95)) # lasciamo dei margini negli intervalli
+
+dT <- density(Tesippp)
+dev.off() # cancelliamo il par precedente
+plot(dT)
+points(Tesippp)
+
+
