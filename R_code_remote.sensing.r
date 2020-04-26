@@ -70,7 +70,7 @@ dev.off()
 plotRGB(p224r63_1988,r=3,g=2,b=1, stretch="Lin")
 plotRGB(p224r63_1988,r=4,g=3,b=2, stretch="Lin")
 
-#plot delle immagini dei due anni messe a confronto
+#plot delle immagini dei due diversi anni messe a confronto, utilizzando la banda del NIR sulla componente "r"
 par(mfrow=c(2,1))
 plotRGB(p224r63_1988,r=4,g=3,b=2, stretch="Lin")
 plotRGB(p224r63_2011,r=4,g=3,b=2, stretch="Lin")
@@ -86,14 +86,14 @@ cldifdvi <- colorRampPalette(c('red','white','blue'))(100)
 plot(difdvi, col=cldifdvi)
 
 
-par(mfrow=c(3,1)) # creiamo il multipanel con l'infrarosso dei due anni e la differenza nell'indice DVI
+par(mfrow=c(3,1)) # creiamo il multipanel con le immagini ad infrarosso dei due anni e la differenza nell'indice DVI
 plotRGB(p224r63_1988,r=4,g=3,b=2, stretch="Lin")
 plotRGB(p224r63_2011,r=4,g=3,b=2, stretch="Lin")
 plot(difdvi, col=cldifdvi)
 dev.off()
 
 # Changing the grain (Resolution)
-p224r63_2011 # possiamo visualizzare la natura del file e la sua risoluzione
+p224r63_2011 # possiamo visualizzare la natura del file e la sua risoluzione (o grana)
 
 p224r63_2011lr <- aggregate(p224r63_2011, fact=10) # lr = low resolution con ingrandimento del pixel di 10 volte (media dei pixel originali contenuti nel nuovo pixel più grande)
 par(mfrow=c(2,1))
