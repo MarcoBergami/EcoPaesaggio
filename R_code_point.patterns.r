@@ -1,4 +1,4 @@
-# codice per analisi dei POINT PATTERNS (strutture dei punti rilevati nello spazio - dati dall'esterno)
+#### codice per analisi dei POINT PATTERNS (strutture dei punti rilevati nello spazio - dati dall'esterno)
 
 install.packages("ggplot2")
 install.packages("spatstat")
@@ -23,7 +23,7 @@ ggplot(mpg, aes(x=displ,y=hwy)) + geom_polygon()
 # ggplot di covid
 ggplot(covid, aes(x=lon,y=lat,size=cases)) + geom_point() # plottiamo i punti dei paesi ponendo le cordinate come x e y e la grandezza dei punti in relazione al numero dei casi riscontrati
 
-# DENSITY
+##### DENSITY
 library(spatstat)
 attach(covid) # specifichiamo il database in cui sono presenti le variabili longitudine e latitudine
 covids <- ppp(lon, lat, c(-180,180), c(-90,90)) # creiamo l'oggetto covidS che, a differenza dell'altro, utilizziamo per l'analisi di densità
@@ -31,7 +31,7 @@ d <- density(covids) # chiamiamo "d" il risultato dell'analisi di densità su co
 plot(d) # plottiamo il grafico di densità
 points(covids, pch=19) # inseriamo i punti dei singoli paesi insieme alla mappa della densità
 
-#COASTLINES
+###### COASTLINES
 library(spatstat)
 library(rgdal)
 
@@ -62,9 +62,9 @@ plot(d, col=cl2, main="density")
 points(covids)
 plot(coastlines, add=T)
 
-# interpolation
+###### interpolation
 marks(covids) <- covid$cases
-i <- Smooth(covids) # i=interpolazione
+i <- Smooth(covids) # i=interpolazione, smooth permette di stimare i valori dove questi non sono stati misurati creando una mappa di tipo continuo
 plot(i)
 
 plot(i, col=cl2, main="Interpolation: estimated number of cases")
@@ -81,8 +81,9 @@ plot(coastlines, add=T)
 plot(i, col=cl2, main="Interpolation: estimated number of cases")
 points(covids)
 plot(coastlines, add=T)
+dev.off()
 
-# DATI DI SAN MARINO
+##### DATI DI SAN MARINO
 load("Tesi.RData")
 ls()
 head(Tesi)
@@ -94,8 +95,31 @@ attach(Tesi)
 Tesippp <- ppp(Longitude, Latitude, c(12.41,12.47), c(43.9,43.95)) # lasciamo dei margini negli intervalli
 
 dT <- density(Tesippp)
-dev.off() # cancelliamo il par precedente
 plot(dT)
 points(Tesippp)
+
+marks(Tesippp) <- Species_richness # associamo i valori del campo "ricchezza di specie" al pointpattern appena creato
+interpol <- Smooth(Tesippp)
+plot(interpol)
+points(Tesippp)
+
+library(rgdal)
+sanmarino <- readOGR("San_Marino.shp")
+plot(sanmarino)
+plot(interpol, add=T)
+points(Tesippp)
+plot(sanmarino, add=T) # risovrapponiamo i confini di SanMarino nel plot
+
+par(mfrow=c(2,1))
+plot(dT, main="Density of points")
+points(Tesippp)
+plot(interpol, main="Estimate of species richness")
+points(Tesippp)
+plot(sanmarino, add=T)
+
+
+
+
+
 
 
