@@ -84,13 +84,14 @@ plot(coastlines, add=T)
 dev.off()
 
 ##### DATI DI SAN MARINO
-load("Tesi.RData")
-ls()
+load("Tesi.RData") # carichiamo il dataset
+ls() # ispezioniamo la tabella del data set
 head(Tesi)
+summary(Tesi) # visualizziamo i range di latitudine e longitudine scritti in forma decimale e non in gradi sessagesimali 
 attach(Tesi)
 
 # X varia da 12.42 a 12.46
-# y varia da 43.91 a 43.94
+# Y varia da 43.91 a 43.94
 # pointpattern: x,y,c(xmin,xmax),c(ymin,ymax)
 Tesippp <- ppp(Longitude, Latitude, c(12.41,12.47), c(43.9,43.95)) # lasciamo dei margini negli intervalli
 
