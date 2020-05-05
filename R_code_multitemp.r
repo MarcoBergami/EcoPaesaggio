@@ -60,6 +60,30 @@ after <- c(48.0,52.0)
 output <- data.frame(cover,before,after)
 View(output)
 
+library(ggplot2)
+# plottiamo un istogramma delle percentuali di copertura di Foresta e Agricoltura sia prima che dopo l'attività di deforestazione
+ggplot(output, aes(x=cover, y=before, color=cover)) + geom_bar(stat="identity", fill="white")
+ggplot(output, aes(x=cover, y=after, color=cover)) + geom_bar(stat="identity", fill="white")
+
+install.packages("gridExtra") # pacchetto necessario per plottare i due grafici insieme (stessa cosa della funzione par) in quanto ggplot non lo permette
+library(gridExtra)
+# assegnamo un nome ad entrambi i ggplot
+grafico1 <- ggplot(output, aes(x=cover, y=before, color=cover)) + geom_bar(stat="identity", fill="white")
+grafico2 <- ggplot(output, aes(x=cover, y=after, color=cover)) + geom_bar(stat="identity", fill="white")
+grid.arrange(grafico1, grafico2, nrow = 1) 
+# i valori sull'asse y rimangono diversi per i due grafici, bisognerebbe settarli entrambi tra 0 e 100 %
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
