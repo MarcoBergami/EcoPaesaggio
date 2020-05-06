@@ -43,16 +43,17 @@ percent1
 
 # facciamo lo stesso per la seconda immagine
 freq(d2c$map)
-     value  count
-[1,]     1 164667
-[2,]     2 178059
+#      value  count
+# [1,]     1 164667
+# [2,]     2 178059
 # classe 1 = aree aperte, classe 2 = foresta
 # tot delle celle (pixel) di d2c = 164667 + 178059 = 342726
 totd2c = 164667 + 178059 = 342726
 percent2 <- freq(d2c$map)*100/totd2c
-            value    count
-[1,] 0.0002917783 48.04625
-[2,] 0.0005835565 51.95375
+percent2
+#             value    count
+# [1,] 0.0002917783 48.04625
+# [2,] 0.0005835565 51.95375
 
 cover <- c("Agriculture","Forest")
 before <- c(11.1,88.9)
