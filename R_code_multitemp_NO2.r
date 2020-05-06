@@ -5,7 +5,8 @@ setwd("C:/LAB")
 library(raster)
 EN01 <- raster("EN_0001.png")
 plot(EN01)
-
+# utilizziamo la funzione raster per caricare il singolo layer (mono-banda, solo quello relativo a NO2) delle immagini satellitari 
+# (diversa da brick che invece permette di caricare tutti i layer dei vari sensori)
 EN02 <- raster("EN_0002.png")
 EN03 <- raster("EN_0003.png")
 EN04 <- raster("EN_0004.png")
@@ -46,9 +47,14 @@ plot(EN11, col=cl)
 plot(EN12, col=cl)
 plot(EN13, col=cl)
 
-
-
-
+##### Utilizziamo la funzione lapply per caricare più immagini contemporaneamente
+# load("multitemp.NO2.RData")
+# ls()
+rlist = list.files(pattern = ".png") # chiamiamo rlist l'intero intervallo di file con estensione .png presenti all'interno della cartella "esa_no2"
+# utilizziamo la funzione "lapply", e più in particolare la funzione raster al suo interno, per caricare i file di rlist
+listafinale = lapply(rlist, raster)
+EN <- stack(listafinale) # creiamo un pacchetto delle immagini in modo da poterle plottare
+plot(EN, col=cl)
 
 
 
