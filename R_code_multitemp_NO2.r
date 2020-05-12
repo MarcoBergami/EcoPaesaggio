@@ -56,5 +56,16 @@ listafinale = lapply(rlist, raster)
 EN <- stack(listafinale) # creiamo un pacchetto delle immagini in modo da poterle plottare
 plot(EN, col=cl)
 
+difEN <- EN$EN_0013 - EN$EN_0001 
+
+#### funzione boxplot
+boxplot(EN) # barre in verticale
+boxplot(EN, horizontal=T) # barre in orizzontale
+boxplot(EN, horizontal=T,outline=F) # si potrebbe aggiungere l'argomento axes=F per eliminare gli assi. E' sottointeso come axes=T
+# la mediana non mostra una significativa variazione da EN_0001 a EN_0013, mentre è ben visibile la diminuzione dei massimi di concentrzione di NO2
+
+
+
+
 
 
