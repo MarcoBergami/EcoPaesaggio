@@ -1,4 +1,4 @@
-#### R CODE - analisi multitemporale di variazione della land cover
+#### R CODE - analisi multitemporale di variazione della "land cover"
 
 setwd("C:/LAB")
 library(raster)
@@ -48,7 +48,7 @@ freq(d2c$map)
 # [2,]     2 178059
 # classe 1 = aree aperte, classe 2 = foresta
 # tot delle celle (pixel) di d2c = 164667 + 178059 = 342726
-totd2c = 164667 + 178059 = 342726
+totd2c = 164667 + 178059
 percent2 <- freq(d2c$map)*100/totd2c
 percent2
 #             value    count
