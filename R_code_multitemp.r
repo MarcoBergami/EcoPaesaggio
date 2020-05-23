@@ -55,11 +55,12 @@ percent2
 # [1,] 0.0002917783 48.04625
 # [2,] 0.0005835565 51.95375
 
-cover <- c("Agriculture","Forest")
-before <- c(11.1,88.9)
-after <- c(48.0,52.0)
-output <- data.frame(cover,before,after)
-View(output)
+# per plottare i dati ottenuti creiamo un relativo dataset
+cover <- c("Agriculture","Forest") # creiamo la colonna "cover" assegnandoli i due valori delle due classi
+before <- c(11.1,88.9) # creiamo la seconda colonna "before" con i valori delle due classi nella prima mappa (defor1)
+after <- c(48.0,52.0) # colonna "after" con i valori delle classi nella seconda mappa (defor2)
+output <- data.frame(cover,before,after) # associamo i campi appena creati ad un dataframe (tabella) 
+View(output) # visualizziamo la tabella
 
 library(ggplot2)
 # plottiamo un istogramma delle percentuali di copertura di Foresta e Agricoltura sia prima che dopo l'attività di deforestazione
