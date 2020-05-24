@@ -6,7 +6,7 @@ library(raster)
 EN01 <- raster("EN_0001.png")
 plot(EN01)
 # utilizziamo la funzione raster per caricare il singolo layer (mono-banda, solo quello relativo a NO2) delle immagini satellitari 
-# (diversa da brick che invece permette di caricare tutti i layer dei vari sensori)
+# (diversa da brick che invece permette di caricare tutte le bande dei vari sensori)
 EN02 <- raster("EN_0002.png")
 EN03 <- raster("EN_0003.png")
 EN04 <- raster("EN_0004.png")
