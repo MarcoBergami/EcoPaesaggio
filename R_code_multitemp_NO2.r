@@ -50,6 +50,8 @@ plot(EN13, col=cl)
 ##### Utilizziamo la funzione lapply per caricare più immagini contemporaneamente
 # load("multitemp.NO2.RData")
 # ls()
+setwd("C:/LAB/esa_no2")
+
 rlist = list.files(pattern = ".png") # chiamiamo rlist l'intero intervallo di file con estensione .png presenti all'interno della cartella "esa_no2"
 # utilizziamo la funzione "lapply", e più in particolare la funzione raster al suo interno, per caricare i file di rlist
 listafinale = lapply(rlist, raster)
