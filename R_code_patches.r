@@ -26,8 +26,9 @@ par(mfrow=c(1,2))
 plot(d1c.for, col=cl)
 plot(d2c.for, col=cl)
 
-# creiamo le patches
+# MB: creiamo le patches con la funzione clump
 # MB: nel caso fosse rischiesto il pacchetto igraph: install.packages("igraph")
+# library(igraph)
 d1c.for.patches <- clump(d1c.for)
 d2c.for.patches <- clump(d2c.for)
 
