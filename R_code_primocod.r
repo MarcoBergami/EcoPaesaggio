@@ -2,6 +2,7 @@
 install.packages("sp")
 
 library(sp) # richiamiamo la libreria sp prima di .....
+# require(sp) è un altro comando per richiamare librerie
 data(meuse)
 meuse
 pairs(meuse)
