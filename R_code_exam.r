@@ -10,7 +10,7 @@
 # 8. R_code_multitemp_NO2.r   
 # 9. R_code_snow.r   
 # 10. R_code_patches.r   
-
+# 11. R_code_crop.r
 
 
 ### R_code_primocod.r - PRIMO CODICE ECOLOGIA DEL PAESAGGIO
@@ -675,9 +675,63 @@ ggplot(output, aes(x=time, y=npatches, color="red")) + geom_bar(stat="identity",
 
 
 
+#################################################################################################################
+#################################################################################################################
 
 
 
 
- 
+### R_code_crop.r
+
+setwd("C:/LAB/snow")
+library(raster)
+
+rlist=list.files(pattern="snow2", full.names=T) # creo la lista di file.tif situati dentro la wd
+list_rast=lapply(rlist, raster)
+snow.multitemp <- stack(list_rast)
+
+clb <- colorRampPalette(c('dark blue','blue','light blue'))(100)
+plot(snow.multitemp,col=clb)
+
+# ZOOM
+
+snow.multitemp # guardiamo il nome corretto di un file
+plot(snow.multitemp$snow2010r, col=clb)
+
+extension <- c(6, 18, 40, 50) # definiamo l'intervallo di longitudine e latitudine chiamandolo "estensione"
+zoom(snow.multitemp$snow2010r, ext=extension) # utilizziamo la funzione zoom di raster inserendo l'estensione scelta
+extension <- c(6, 20, 35, 50) # correggiamo gli intervalli
+zoom(snow.multitemp$snow2010r, ext=extension) 
+
+zoom(snow.multitemp$snow2010r, ext=drawExtent()) # definiamo manualmente, con il mouse, sull'immagine, il rettangolo di estensione che ci interessa
+# definire il rettangolo: 
+
+# CROP
+
+# extension <- c(6, 20, 35, 50)
+snow2010r.italy <- crop(snow.multitemp$snow2010r, extension) # anzichè zoomare facciamo un ritaglio sull'area interessata
+# notare che non viene scritto ext= ...
+plot(snow2010r.italy, col=clb)
+
+# Crop the Italy extent on the whole stack of snow layers
+snow.italy <- crop(snow.multitemp, extension)
+plot(snow.italy, col=clb)
+
+snow.italy # verifichiamo l'intervallo di valori massimi e minimi indicati in legenda
+plot(snow.multitemp.italy, col=clb, zlim=c(20,200)) # settiamo lo stesso intervallo di legenda per tutte le immagini dello stack
+
+# BOXPLOT
+
+boxplot(snow.multitemp.italy, horizontal=T,outline=F)
+# notare la diminuzione dei valori massimi di copertura nevosa (contrazione delle barre) all'aumentare del tempo
+
+
+
+
+
+
+
+
+
+
 
