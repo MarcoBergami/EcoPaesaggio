@@ -11,6 +11,7 @@
 # 9. R_code_snow.r   
 # 10. R_code_patches.r   
 # 11. R_code_crop.r
+# 12. Species Distribution Modelling
 
 
 ### R_code_primocod.r - PRIMO CODICE ECOLOGIA DEL PAESAGGIO
@@ -724,8 +725,79 @@ plot(snow.multitemp.italy, col=clb, zlim=c(20,200)) # settiamo lo stesso interva
 
 boxplot(snow.multitemp.italy, horizontal=T,outline=F)
 # notare la diminuzione dei valori massimi di copertura nevosa (contrazione delle barre) all'aumentare del tempo
+ 
 
 
+
+
+#################################################################################################################
+#################################################################################################################
+
+
+
+
+### Species Distribution Modelling
+
+# install.packages("sdm")
+library(sdm)
+library(raster)
+library(rgdal)
+
+file <- system.file("external/species.shp", package="sdm") # carichiamo il file attraverso la funzione system.file
+species <- shapefile(file) 
+species # guardiamo di cosa si tratta il dataset
+species$Occurrence # interroghiamo l'unica variabile del dataset
+# vediamo un elenco di 0 e 1, i quali dovrebbero corrispondere a valori di presenza/assenza all'interno del dataset, disposti secondo il sdr UTM, zona 30
+plot(species)
+# vengono visualizzati sia i punti di campionamento di presenza della specie, sia quelli di assenza.
+
+plot(species[species$Occurrence == 1,],col='blue',pch=16) # identificahiamo solo le presenze, colorandole di blu
+points(species[species$Occurrence == 0,],col='red',pch=16) # coloriamo in rosso le assenze, aggiungendo i punti nel precendente plot
+
+# aggiungiamo delle variabili ambientali 
+path <- system.file("external", package="sdm") # carichiamo i file presenti nella cartella external nel pacchetto sdm
+lst <- list.files(path=path,pattern='asc$',full.names = T) # creiamo una lista dei file asci presenti dentro path 
+lst # controlliamo i livelli/layer presenti
+#[1] "C:/Users/Marco Bergami/Documents/R/win-library/3.5/sdm/external/elevation.asc"
+#[2] "C:/Users/Marco Bergami/Documents/R/win-library/3.5/sdm/external/precipitation.asc"
+#[3] "C:/Users/Marco Bergami/Documents/R/win-library/3.5/sdm/external/temperature.asc"  
+#[4] "C:/Users/Marco Bergami/Documents/R/win-library/3.5/sdm/external/vegetation.asc"  
+
+preds <- stack(lst) # facciamo uno stack della lista dei "predittori", cioè i layer.asc che sono in grado di predire la presenza/assenza 
+cl <- colorRampPalette(c('blue','orange','red','yellow')) (100)
+plot(preds, col=cl)
+
+plot(preds$elevation, col=cl) # plottiamo solamente l'elevazione
+points(species[species$Occurrence == 1,], pch=16)
+# deduciamo che la specie è maggiormente presente con basse altitudini
+
+plot(preds$temperature, col=cl)
+points(species[species$Occurrence == 1,], pch=16)
+# deduciamo che la specie è maggiormente presente con alte temperature
+
+plot(preds$precipitation, col=cl)
+points(species[species$Occurrence == 1,], pch=16)
+# deduciamo che la specie è maggiormente presente con precipitazioni intermedie
+
+plot(preds$vegetation, col=cl)
+points(species[species$Occurrence == 1,], pch=16)
+# deduciamo che la specie è maggiormente presente con copertura vegetazionele abbastanza forte
+
+# Generalized Linear Model
+
+d <- sdmData(train=species, predictors=preds)
+# train = insieme dei punti di campionamento
+m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation, data=d, methods='glm') # specifichiamo il modello
+p1 <- predict(m1, newdata=preds) # specifichiamo la previsione, indicando il modello e l'insieme dei predittori
+plot(p1, col=cl)
+points(species[species$Occurrence == 1,], pch=16)
+ 
+
+
+
+
+#################################################################################################################
+#################################################################################################################
 
 
 
