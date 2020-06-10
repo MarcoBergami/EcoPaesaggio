@@ -14,18 +14,36 @@
 # 12. Species Distribution Modelling
 
 
+
+
+
+#################################################################################################################
+#################################################################################################################
+
+
+
+
+
+
 ### R_code_primocod.r - PRIMO CODICE ECOLOGIA DEL PAESAGGIO
+
 install.packages("sp")
 
-library(sp) # richiamiamo la libreria sp prima di .....
-data(meuse)
-meuse
-pairs(meuse)
-pairs(~ cadmium + copper + lead , data = meuse)
+library(sp) # MB: richiamiamo la libreria sp prima di poterne utilizzare i dati all'interno
+data(meuse) # MB: richiamiamo il dataset
+meuse # MB: visualizziamo il dataset intero
+names(meuse) # MB: visualizziamo solo il nome delle variabili
+head(meuse) #MB: visualizziamo solo le prime 6 righe della tabella
+
+pairs(meuse) # MB: produciamo una matrice di grafici a dispersione 
+# MB: la diagonale della matrice mostra i nomi delle variabili
+# MB: le altre celle della matrice del diagramma mostrano i diagrammi a dispersione di ciascuna combinazione di variabili del nostro frame di dati. 
+
+pairs(~ cadmium + copper + lead , data = meuse) # MB: specifichiamo le sole 3 variabili su cui utilizzare la funzione pairs
 pairs(~ cadmium + copper + lead + zinc , data = meuse)
-pairs(meuse[,3:6], col="red") # cambiamo colore
-pairs(meuse[,3:6], col="red", pch=19, cex=3) # cambiamo "point character" (simbolo grafico) e "character exageration" (grandezza simbolo)
-pairs(meuse[,3:6], col="red", pch=19, cex=3, main="Primo pairs") # inseriamo un titolo al grafico
+pairs(meuse[,3:6], col="red") # MB: specifichiamo le varibili definendo un intervallo di colonne e cambiamo colore
+pairs(meuse[,3:6], col="red", pch=19, cex=3) # MB: cambiamo "point character" (simbolo grafico) e "character exageration" (grandezza simbolo)
+pairs(meuse[,3:6], col="red", pch=19, cex=3, main="Primo pairs") # MB: inseriamo un titolo al grafico
 
 panel.correlations <- function(x, y, digits=1, prefix="", cex.cor)
 {
@@ -67,15 +85,21 @@ panel.histograms <- function(x, ...)
     rect(breaks[-nB], 0, breaks[-1], y, col="white", ...)
 }
 pairs(meuse[,3:6], lower.panel = panel.correlations, upper.panel = panel.smoothing, diag.panel = panel.histograms)
-#parte di codice che permette di mostrare le tre fuzioni inserite nei grafici, suddivedendole in pannello superiore, inferiore e diagonale.
+# MB: parte di codice che permette di suddividere il device grafico in pannello superiore, inferiore e diagonale
+# MB: pannello inferiore = valore del coeffic. di correlazione
+# MB: diagonale = grafico ad istogrammi
+# MB: pannello superiore = grafico di correlazione
 
-#funzione plot
+# EXERCISE: mettere come lower panel lo smoothing, come diagonal panel gli istogrammi e come upper panel le correlazioni 
+pairs(meuse[,3:6], lower.panel = panel.smoothing , upper.panel = panel.correlations, diag.panel = panel.histograms)
+
+# funzione plot
 plot(meuse$cadmium , meuse$copper)
-attach(meuse)
+attach(meuse) # MB: "attacchiamo" il database in modo da non doverlo specificare ogni volta
 plot(cadmium,copper)
 plot(cadmium,copper, pch=17, col="green", main="primo plot")
-plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab="rame") # cambiamo in nome delle etichette sugli assi del grafico
-plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab="rame", cex.lab=2, cex=2) # cambiamo grandezza delle etichette e dei simboli
+plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab="rame") # MB: cambiamo in nome delle etichette sugli assi del grafico
+plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab="rame", cex.lab=2, cex=2) # MB: cambiamo grandezza delle etichette e dei simboli
 
 
 
@@ -87,40 +111,52 @@ plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab
 
 
 
-### R_code_spatial.r - funzioni spaziali
+### R_code_spatial.r - Funzioni spaziali
+
 library(sp)
-data(meuse) # richiamare il dataset
-head(meuse) # diversamente, utilizzando names(meuse) si visualizzano solo i nomi delle variabili, non più le prime righe di tabella
-# incominciamo richiamando la funzione plot tra cadmio e piombo
-attach(meuse)     #alleghiamo il dataframe
-plot(cadmium,lead,col="red",pch=19,cex=2)
-plot(copper,zinc,col="green",pch=17,cex=2)  #plot di rame e zinco usando come simbolo il triangolo e colore verde
-plot(copper,zinc,col="green",pch=17,cex=2,xlab="rame", ylab="zinco")
 
-# funzione multiframe o multipanel, necessaria per mostrare più grafici insieme, si chiama "par", in questo caso composto da 1 riga e 2 colonne.
-par(mfrow=c(1,2))
+data(meuse) 
+head(meuse) 
+
+# MB: plottiamo insieme i dati realtivi al cadmio e al piombo
+attach(meuse)
+plot(cadmium,lead,col="red",pch=19,cex=2)
+
+# exercise: plot di copper e zinc con simbolo trinagolo (17) e colore verde 
+plot(copper,zinc,col="green",pch=17,cex=2) 
+plot(copper,zinc,col="green",pch=17,cex=2,xlab="rame", ylab="zinco") # MB: cambiamo in nome delle etichette sugli assi del grafico
+
+# MB: funzione multiframe o multipanel, necessaria per mostrare più grafici insieme, si chiama "par"
+par(mfrow=c(1,2)) # MB: all'interno di c definiamo il numero di righe e colonne del multipanel
 plot(cadmium,lead,col="red",pch=19,cex=2)
 plot(copper,zinc,col="green",pch=17,cex=2)
-# ovviamente per utilizzare un multipanel con 2 righe e 1 colonna basta cambiare i numeri dentro la parentsi di c.
+# MB: ovviamente per utilizzare un multipanel con 2 righe e 1 colonna basta cambiare i numeri dentro la parentsi di c.
 
 install.packages("GGally")
 library(GGally)
-#richiamiamo la funzione pairs in GGally specificando un sottoinsieme delle variabili
+# MB: richiamiamo la funzione pairs in GGally specificando un sottoinsieme delle variabili
 ggpairs(meuse[,3:6])
-# sull'asse diagonale sono presenti le singole variabili e la distribuzione di frequenza dei dati, nel pannello superiore ci sono i valori del coeff. di correlazione.
+# MB: sull'asse diagonale sono presenti le singole variabili e la distribuzione di frequenza dei dati
+# MB: nel pannello superiore ci sono i valori del coeff. di correlazione.
+# MB: nel pannello inferiore ci sono le nuvole di punti dei grafici di dispersione
 
-# per svolgere delle analisi spaziali occorre per prima cosa far capire ad R che il dataframe contiene anche dei valori di coordinate, x e y. per farlo usiamo una funzione "coordinates" contenuta nel pacchetto sp.
+# MB: per svolgere delle analisi spaziali occorre per prima cosa far capire ad R che il dataframe contiene anche dei valori di coordinate, x e y. 
+# MB: usiamo la funzione "coordinates" contenuta nel pacchetto sp.
 coordinates(meuse)=~x+y # la tilde è necessaria per raggruppare più colonne del dataset
 plot(meuse)
-spplot(meuse,"zinc") #funzione spplot per plottare i dati distribuiti nello spazio, in questo caso rispetto alla variabile zinco, indicata tra "". Vediamo che i valori dello zinco riscontrati vanno aumentando verso il meandro (zona gialla) del fiume
-# funzione bubble del pacchetto sp. Permette di plottare allo stesso modo di prima ma usando dei pallini più o meno grandi a seconda delle concentrazioni
+
+# MB: funzione spplot per plottare i dati distribuiti nello spazio, in questo caso rispetto alla variabile zinco, indicata tra "".
+spplot(meuse,"zinc") 
+# MB: Vediamo che i valori dello zinco riscontrati vanno aumentando verso il meandro (zona gialla) del fiume
+
+# MB: funzione bubble del pacchetto sp. Permette di plottare allo stesso modo di prima ma usando dei pallini più o meno grandi a seconda delle concentrazioni
 bubble(meuse,"zinc")
 bubble(meuse,"copper",col="red")
 
-# inventiamo 2 oggetti attraverso la definizione di stringhe
+# MB: inventiamo 2 oggetti attraverso la definizione di stringhe
 foram <- c(10, 20, 35, 55, 67, 80)
 carbon <- c(5, 15, 30, 70, 85, 99)
-plot(foram, carbon, col="green", cex=2, pch=19) # plottando possiamo notare la stretta correlazione tra le due variabili
+plot(foram, carbon, col="green", cex=2, pch=19) # MB: plottando possiamo notare la stretta correlazione tra le due variabili
 
 
 
