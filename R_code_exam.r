@@ -530,10 +530,13 @@ grid.arrange(grafico1, grafico2, nrow = 1)
 setwd("C:/LAB")
 
 library(raster)
+
+# MB: utilizziamo la funzione raster per caricare il singolo layer (mono-banda, solo quello relativo a NO2) delle immagini satellitari 
+# MB: (diversa da brick che invece permette di caricare tutte le bande dei vari sensori)
 EN01 <- raster("EN_0001.png")
 plot(EN01)
-# utilizziamo la funzione raster per caricare il singolo layer (mono-banda, solo quello relativo a NO2) delle immagini satellitari 
-# (diversa da brick che invece permette di caricare tutte le bande dei vari sensori)
+
+
 EN02 <- raster("EN_0002.png")
 EN03 <- raster("EN_0003.png")
 EN04 <- raster("EN_0004.png")
@@ -551,14 +554,17 @@ cl <- colorRampPalette(c('red','orange','yellow'))(100)
 plot(EN01, col=cl)
 plot(EN13, col=cl)
 
+# MB: confrontiamo le situazioni di gennaio e marzo
 par(mfrow=c(1,2))
 plot(EN01, col=cl)
 plot(EN13, col=cl)
 
+# MB: svolgiamo una differenza tra marzo e gennaio, colorando in giallo le zone ad alta variazione
 difno2 <- EN13-EN01
 cldif <- colorRampPalette(c('blue','black','yellow'))(100)
 plot(difno2, col=cldif)
 
+# MB: essendo 13 immagini occorre una multipanel di 4x4 per plottarle tutte insieme
 par(mfrow=c(4,4))
 plot(EN01, col=cl)
 plot(EN02, col=cl)
@@ -575,23 +581,33 @@ plot(EN12, col=cl)
 plot(EN13, col=cl)
 
 ##### Utilizziamo la funzione lapply per caricare più immagini contemporaneamente
+
 # load("multitemp.NO2.RData")
 # ls()
+# library(raster)
 setwd("C:/LAB/esa_no2")
 
-rlist = list.files(pattern = ".png") # chiamiamo rlist l'intero intervallo di file con estensione .png presenti all'interno della cartella "esa_no2"
-# utilizziamo la funzione "lapply", e più in particolare la funzione raster al suo interno, per caricare i file di rlist
+# MB: nominiamo, con la funzione list.files, l'intero intervallo di file con estensione .png presenti all'interno della cartella "esa_no2"
+rlist = list.files(pattern = ".png") 
+# MB: utilizziamo la funzione "lapply", e più in particolare la funzione raster al suo interno, per caricare i file di rlist
 listafinale = lapply(rlist, raster)
-EN <- stack(listafinale) # creiamo un pacchetto delle immagini in modo da poterle plottare
+EN <- stack(listafinale) # MB: creiamo un pacchetto delle immagini in modo da poterle plottare tutte insieme
 plot(EN, col=cl)
 
+# MB: svolgiamo la differenza tra marzo e gennaio utilizzando lo stack
+# MB: utilizziamo il $ per collegare i singoli file al nome dello stack
 difEN <- EN$EN_0013 - EN$EN_0001 
+plot(difEN, col=cldif)
 
 #### funzione boxplot
-boxplot(EN) # barre in verticale
-boxplot(EN, horizontal=T) # barre in orizzontale
-boxplot(EN, horizontal=T,outline=F) # si potrebbe aggiungere l'argomento axes=F per eliminare gli assi. E' sottointeso come axes=T
-# la mediana non mostra una significativa variazione da EN_0001 a EN_0013, mentre è ben visibile la diminuzione dei massimi di concentrzione di NO2
+
+# MB: verifichiamo quanto è variato l’azoto nel tempo
+boxplot(EN) # MB: box in verticale
+boxplot(EN, horizontal=T) # MB: box in orizzontale
+boxplot(EN, horizontal=T, outline=F) # MB: eliminiamo anche i valori estremi ("outliner")
+# MB: si potrebbe aggiungere l'argomento axes=F per eliminare gli assi. E' sottointeso come axes=T
+# MB: la mediana non mostra una significativa variazione da EN_0001 a EN_0013
+# MB: mentre è ben visibile la diminuzione dei massimi di concentrzione di NO2
 
 
 
