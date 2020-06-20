@@ -623,35 +623,41 @@ boxplot(EN, horizontal=T, outline=F) # MB: eliminiamo anche i valori estremi ("o
 ### R_code_snow.r - Snow cover analysis through Copernicus images
 
 setwd("C:/LAB")
-install.packages("ncdf4")
+install.packages("ncdf4") # MB: pacchetto necessario per caricare immagini .nc
 
 library(raster)
 library(ncdf4)
 
+# MB: carichiamo l'immagine - copertura nevosa europea del 18 maggio - tramite la funzione raster del medesimo pacchetto
 snowmay <- raster("c_gls_SCE500_202005180000_CEURO_MODIS_V1.0.1.nc")
 cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
 plot(snowmay, col=cl)
 
+# MB: carichiamo i dati di copertura nevosa degli anni 2000, 2005, 2010, 2015, 2020 presenti dentro la cartella snow
 setwd("C:/LAB/snow")
-# importo tutte le immagini con lappy 
-rlist=list.files(pattern=".tif", full.names=T) # creo la lista di file.tif situati dentro la wd
+# MB: importo tutte le immagini con lappy 
+rlist=list.files(pattern=".tif", full.names=T) # MB: creo la lista dei file.tif situati dentro la wd
 list_rast=lapply(rlist, raster)
 snow.multitemp <- stack(list_rast)
-plot(snow.multitemp, col=cl) # la copertura nevosa del 2000 e del 2005 è simulata
+plot(snow.multitemp, col=cl) # MB: la copertura nevosa del 2000, del 2005 e del 2010 è simulata
 
+# MB: confrontiamo la prima e l'ultima immagine
 par(mfrow=c(1,2))
-plot(snow.multitemp$snow2000r,col=cl, zlim=c(0,250)) # poniamo uguale il limite della legenda in entrambe le immagini
+plot(snow.multitemp$snow2000r,col=cl, zlim=c(0,250)) 
 plot(snow.multitemp$snow2020r,col=cl, zlim=c(0,250))
+# MB: con l'argomento a funzione "zlim" poniamo uguale il limite superiore della legenda in entrambe le immagini
 
+# MB: differenza tra il 2020 e il 2000
 difsnow = snow.multitemp$snow2020r - snow.multitemp$snow2000r
 cldif <- colorRampPalette(c('blue','white','red'))(100) 
 plot(difsnow, col=cldif)
 
 ### Prediction
 # scaricare il file "prediction.r" da IOL nella cartella "snow". QUesto contiene la parte di codice per la previsione dei dati al 2025
-source("prediction.r") # importare il codice dall'esterno - processo troppo lento
-
-predicted.snow.2025.norm <- raster("predicted.snow.2025.norm.tif") # carichiamo l'immagine già sviluppata da IOL 
+source("prediction.r") # importare il codice dall'esterno 
+# plot(predicted.snow.2025.norm, col=cl) 
+# MB: il processo è troppo lento
+predicted.snow.2025.norm <- raster("predicted.snow.2025.norm.tif") # carichiamo da IOL l'immagine già sviluppata  
 plot(predicted.snow.2025.norm, col=cl)
 
 
