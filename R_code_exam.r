@@ -679,55 +679,61 @@ setwd("C:/LAB")
 library(ggplot2)
 library(raster)
 
+# MB: utilizziamo le immagini già classificate nell'esercitazione sulla land cover
 d1c <- raster("d1c.tif")
 d2c <- raster("d2c.tif")
 
+# MB: identifichiamo le due classi
 cl <- colorRampPalette(c('black','green'))(100)
 par(mfrow=c(1,2))
 plot(d1c, col=cl)
 plot(d2c, col=cl)
 # classe 1 = agricoltura, classe 2 = foresta
 
-# riclassificamio le immagini eliminando la classe di agricoltura attraverso la funzione "cbind"
+# MB: riclassificamio le immagini eliminando la classe di agricoltura attraverso la funzione "cbind"
+# MB: applichiamo alla classe 1 un valore nullo (NA = Not Assigned)
 d1c.for <- reclassify(d1c, cbind(1, NA))
 
 par(mfrow=c(1,2))
 plot(d1c, col=cl)
 plot(d1c.for, col=cl)
 
-# facciamo lo stesso per la seconda immagine
+# MB: facciamo lo stesso per la seconda immagine
 d2c.for <- reclassify(d2c, cbind(1, NA))
 
 par(mfrow=c(1,2))
 plot(d1c.for, col=cl)
 plot(d2c.for, col=cl)
 
-# creiamo le patches
+# MB: creiamo le patches raggruppando i pixel vicini - funzione clump
 d1c.for.patches <- clump(d1c.for)
 d2c.for.patches <- clump(d2c.for)
 
-# per creare i file appena riclassificati all'interno della wd
+# MB: per creare i file appena riclassificati all'interno della wd
 # writeRaster(d1c.for.patches, "d1c.for.patches.tif")
 # writeRaster(d2c.for.patches, "d2c.for.patches.tif")
 
-# apllichiamo una crp capace di mettre in evidenza la varie patches
+# MB: apllichiamo una cRP capace di mettre in evidenza la varie patches
 clp <- colorRampPalette(c('dark blue','blue','green','orange','yellow','red'))(100)
 par(mfrow=c(1,2))
 plot(d1c.for.patches, col=clp)
 plot(d2c.for.patches, col=clp)
 
+# MB: definiamo quantitativamente il numero di patches presenti
 d1c.for.patches
 # values     : 1, 301  (min, max) 
-# il valore max corrisponde al numero delle patches
+# MB: il valore max corrisponde al numero delle patches
 # max patches d1 = 301
-# max patches d1 = 1212
+d2c.for.patches
+# max patches d2 = 1212
 
-# creiamo il dataframe
+# MB: creiamo il dataframe 
 time <- c("Before deforestation","After deforestation")
 npatches <- c(301,1212)
 output <- data.frame(time,npatches)
 attach(output)
 
+# MB: utilizziamo la funzione ggplot per graficare i risultati
 ggplot(output, aes(x=time, y=npatches, color="red")) + geom_bar(stat="identity", fill="white")
  
 
@@ -740,49 +746,62 @@ ggplot(output, aes(x=time, y=npatches, color="red")) + geom_bar(stat="identity",
 
 
 
+
 ### R_code_crop.r
 
 setwd("C:/LAB/snow")
+
 library(raster)
 
-rlist=list.files(pattern="snow2", full.names=T) # creo la lista di file.tif situati dentro la wd
+# MB: carichiamo le immagini di copertura nevosa tramite lapply
+rlist=list.files(pattern="snow2", full.names=T) 
 list_rast=lapply(rlist, raster)
 snow.multitemp <- stack(list_rast)
 
 clb <- colorRampPalette(c('dark blue','blue','light blue'))(100)
 plot(snow.multitemp,col=clb)
 
+
 # ZOOM
 
-snow.multitemp # guardiamo il nome corretto di un file
-plot(snow.multitemp$snow2010r, col=clb)
+snow.multitemp # MB: guardiamo il nome dei vari file dello stack
+plot(snow.multitemp$snow2010r, col=clb) # MB: plottiamo solamente l'immagine del 2010
 
-extension <- c(6, 18, 40, 50) # definiamo l'intervallo di longitudine e latitudine chiamandolo "estensione"
-zoom(snow.multitemp$snow2010r, ext=extension) # utilizziamo la funzione zoom di raster inserendo l'estensione scelta
-extension <- c(6, 20, 35, 50) # correggiamo gli intervalli
+# MB: applichiamo uno zoom definendo matematicamente l'estensione
+extension <- c(6, 18, 40, 50) # MB: definiamo l'intervallo (longitudine min e max, e latitudine min e max) chiamandolo "extension"
+zoom(snow.multitemp$snow2010r, ext=extension) # MB: utilizziamo la funzione zoom di raster inserendo l'estensione scelta
+extension <- c(6, 20, 35, 50) # MB: correggiamo gli intervalli
 zoom(snow.multitemp$snow2010r, ext=extension) 
 
-zoom(snow.multitemp$snow2010r, ext=drawExtent()) # definiamo manualmente, con il mouse, sull'immagine, il rettangolo di estensione che ci interessa
-# definire il rettangolo: 
+# MB: definiamo manualmente, con il mouse, sull'immagine, il rettangolo dell'estensione che ci interessa
+# MB: occorre svolgere l'operazione su un plot nuovo
+# dev.off
+# plot(snow.multitemp$snow2010r, col=clb)
+zoom(snow.multitemp$snow2010r, ext=drawExtent()) 
+# MB: per definire il rettangolo partire da un vertice cliccando sulla mappa, spostarsi tenendo premuto, rilasciare, e cliccare nuovamente.
+
 
 # CROP
 
+# MB: possiamo svolgere la stessa azione di zoom ma usando la funzione "crop"
+# MB: anzichè zoomare facciamo un ritaglio sull'area interessata
 # extension <- c(6, 20, 35, 50)
-snow2010r.italy <- crop(snow.multitemp$snow2010r, extension) # anzichè zoomare facciamo un ritaglio sull'area interessata
-# notare che non viene scritto ext= ...
+snow2010r.italy <- crop(snow.multitemp$snow2010r, extension) 
+# MB: notare che non viene scritto ext= ... ma si specifica solamente l'argomento "extension" scritto per esteso
 plot(snow2010r.italy, col=clb)
 
 # Crop the Italy extent on the whole stack of snow layers
 snow.italy <- crop(snow.multitemp, extension)
 plot(snow.italy, col=clb)
 
-snow.italy # verifichiamo l'intervallo di valori massimi e minimi indicati in legenda
-plot(snow.multitemp.italy, col=clb, zlim=c(20,200)) # settiamo lo stesso intervallo di legenda per tutte le immagini dello stack
+# MB: verifichiamo se l'intervallo di valori massimi e minimi indicati in legenda sono gli stessi per tutte le immagini
+snow.italy 
+plot(snow.multitemp.italy, col=clb, zlim=c(20,200)) # MB: settiamo lo stesso intervallo di legenda per tutte le immagini dello stack
 
 # BOXPLOT
 
-boxplot(snow.multitemp.italy, horizontal=T,outline=F)
-# notare la diminuzione dei valori massimi di copertura nevosa (contrazione delle barre) all'aumentare del tempo
+boxplot(snow.multitemp.italy, horizontal=T, outline=F)
+# MB: notare la diminuzione dei valori massimi di copertura nevosa (contrazione delle barre) all'aumentare del tempo
  
 
 
@@ -790,6 +809,7 @@ boxplot(snow.multitemp.italy, horizontal=T,outline=F)
 
 #################################################################################################################
 #################################################################################################################
+
 
 
 
