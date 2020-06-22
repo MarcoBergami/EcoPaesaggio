@@ -25,7 +25,7 @@
 
 
 
-### R_code_primocod.r - PRIMO CODICE ECOLOGIA DEL PAESAGGIO
+### 1. R_code_primocod.r - PRIMO CODICE ECOLOGIA DEL PAESAGGIO
 
 install.packages("sp")
 
@@ -111,7 +111,7 @@ plot(cadmium,copper, pch=17, col="green", main="primo plot", xlab="cadmio", ylab
 
 
 
-### R_code_spatial.r - Funzioni spaziali
+### 2. R_code_spatial.r - Funzioni spaziali
 
 library(sp)
 
@@ -169,7 +169,7 @@ plot(foram, carbon, col="green", cex=2, pch=19) # MB: plottando possiamo notare 
 
 
 
-### R_code_point.patterns.r - codice per analisi dei POINT PATTERNS (strutture dei punti rilevati nello spazio - dati dall'esterno)
+### 3. R_code_point.patterns.r - codice per analisi dei POINT PATTERNS (strutture dei punti rilevati nello spazio - dati dall'esterno)
 
 
 # install.packages("ggplot2")
@@ -335,14 +335,15 @@ plot(sanmarino, add=T)
 
 
 
-### R_code_remote.sensing.r - CODICE R PER ANALISI DI IMMAGINI SATELLITARI
+### 4. R_code_remote.sensing.r - CODICE R PER ANALISI DI IMMAGINI SATELLITARI
 
 install.packages("raster")
 library(raster)
+
 setwd("C:/LAB")
 
-p224r63_2011 <- brick("p224r63_2011_masked.grd") # assegnamo, tramite la funzione brick, un nome al file presente dentro la wd
-plot(p224r63_2011) # visualizziamo le 7 immagini, una per ogni banda
+p224r63_2011 <- brick("p224r63_2011_masked.grd") # MB: carichiamo, tramite la funzione brick, l'immagine dentro la wd
+plot(p224r63_2011) # MB: visualizziamo le 7 immagini, una per ogni banda
 # B1: blue
 # B2: green
 # B3: red
@@ -351,110 +352,126 @@ plot(p224r63_2011) # visualizziamo le 7 immagini, una per ogni banda
 # B6: thermal infrared
 # B7: medium infrared
 
-cl <- colorRampPalette(c('black','grey','light grey'))(100) # assegnamo all'oggetto cl una diversa tavola di colori
+cl <- colorRampPalette(c('black','grey','light grey'))(100) 
 plot(p224r63_2011,col=cl)
-names(p224r63_2011) # visualizzaizmo il nome delle bande contenute nel dataset
-clb <- colorRampPalette(c('dark blue','blue','light blue'))(100) # definiamo una tavola di colori per la banda del blu
-plot(p224r63_2011$B1_sre,col=clb) # per la sola banda del blu, mettiamo in evidenza le alte riflettanze (light blue) e le basse (dark blue)
-# per plottare soltanto la banda B1 potremmo utilizzare la funzione attach(p224r63_2011) ma purtroppo questa non funziona per il pacchetto raster. Dobbiamo quindi utilizzare il $
 
-clnir <- colorRampPalette(c('red','orange','yellow'))(100) #facciamo lo stesso per la banda del vicino infrarosso
+names(p224r63_2011) # MB: visualizzaizmo il nome delle bande contenute nel dataset
+
+clb <- colorRampPalette(c('dark blue','blue','light blue'))(100) # MB: definiamo una tavola di colori per la banda del blu
+plot(p224r63_2011$B1_sre,col=clb) 
+# MB: per la sola banda del blu, mettiamo in evidenza le alte riflettanze (light blue) e le basse (dark blue)
+# MB: per plottare soltanto la banda B1 potremmo utilizzare la funzione attach(p224r63_2011) 
+# MB: ma purtroppo questa non funziona per il pacchetto raster -> $
+
+clnir <- colorRampPalette(c('red','orange','yellow'))(100) # MB: facciamo lo stesso per la banda del vicino infrarosso
 plot(p224r63_2011$B4_sre,col=clnir)
 
-par(mfrow=c(2,2)) # creiamo il multipanel in grado di visualizzare 4 immagini in 2 righe e 2 colonne
-clb <- colorRampPalette(c('dark blue','blue','light blue'))(100)
+par(mfrow=c(2,2)) # MB: creiamo il multipanel in grado di visualizzare 4 immagini in 2 righe e 2 colonne
 plot(p224r63_2011$B1_sre,col=clb)
 clg <- colorRampPalette(c('dark green','green','light green'))(100)
 plot(p224r63_2011$B2_sre,col=clg)
-clr <- colorRampPalette(c('dark red','red','pink'))(100) # il colore 'light red' non esiste
+clr <- colorRampPalette(c('dark red','red','pink'))(100) # MB: il colore 'light red' non esiste
 plot(p224r63_2011$B3_sre,col=clr)
 clnir <- colorRampPalette(c('red','orange','yellow'))(100)
 plot(p224r63_2011$B4_sre,col=clnir)
 
-dev.off() # per chiudere il device, ovvero la finestra del grafico
+dev.off() # MB: per chiudere il device, ovvero la finestra del grafico
 
-plotRGB(p224r63_2011,r=3,g=2,b=1) # visualizzare l'immagine satellitare come la vedrebbe l'occhio umano, cioè sovrapponendo le tre bande RGB
-plotRGB(p224r63_2011,r=3,g=2,b=1, stretch="Lin") # stretch: argomento a funzione per riuscire ad "allungare" la banda di colori se no la sovrapposizione fornisce un'immagine scura.
-# per inserire nella composizione anche l'infrarosso vicino ci occorre escludere una banda tra le tre già usate.
-# Scaliamo quindi il numero delle bande sui rispettivi argomenti per inserire l'infrarosso (4) sulla componente red (r)
-plotRGB(p224r63_2011,r=4,g=3,b=2, stretch="Lin") # visualizziamo la vegetazione rossa e il suolo agricolo in celeste
+# MB: immagine satellitare come la vedrebbe l'occhio umano, cioè sovrapponendo le tre bande RGB
+plotRGB(p224r63_2011,r=3,g=2,b=1) 
 
-pdf("ImageRemoteSensing.pdf") # salvare l'immagine come pdf nella wd
-plotRGB(p224r63_2011,r=4,g=3,b=2,stretch="Lin")
-dev.off()
+plotRGB(p224r63_2011,r=3,g=2,b=1, stretch="Lin") 
+# MB: stretch: argomento a funzione per riuscire ad "allungare" la banda di colori se no la sovrapposizione fornisce un'immagine scura
 
-par(mfrow=c(1,2)) # visualizziamo entrambe le immagini una a fianco all'altra
+# MB: per inserire nella composizione anche l'infrarosso vicino ci occorre escludere una banda tra le tre già usate.
+# MB: Scaliamo quindi il numero delle bande sui rispettivi argomenti per inserire l'infrarosso (4) sulla componente red (r)
+plotRGB(p224r63_2011,r=4,g=3,b=2, stretch="Lin") # MB: visualizziamo la vegetazione rossa e il suolo agricolo in celeste
+
+pdf("ImageRemoteSensing.pdf") # MB: salvare l'immagine come pdf nella wd
+
+par(mfrow=c(1,2)) 
 plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 dev.off()
 
-plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin") # visualizziamo la vegetazione verde e il suolo viola 
-plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin") # visualizziamo la vegetazione blu e il suolo giallo
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin") # MB: visualizziamo la vegetazione verde e il suolo viola 
+plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin") # MB: visualizziamo la vegetazione blu e il suolo giallo
 
-p224r63_1988 <- brick("p224r63_1988_masked.grd") # svolgiamo il medesimo esercizio sull'immagine del 1988
+# MB: svolgiamo il medesimo esercizio sull'immagine del 1988
+p224r63_1988 <- brick("p224r63_1988_masked.grd") 
+
 par(mfrow=c(2,2)) 
-clb <- colorRampPalette(c('dark blue','blue','light blue'))(100)
 plot(p224r63_1988$B1_sre,col=clb)
-clg <- colorRampPalette(c('dark green','green','light green'))(100)
 plot(p224r63_1988$B2_sre,col=clg)
-clr <- colorRampPalette(c('dark red','red','pink'))(100)
 plot(p224r63_1988$B3_sre,col=clr)
-clnir <- colorRampPalette(c('red','orange','yellow'))(100)
 plot(p224r63_1988$B4_sre,col=clnir)
-# le color palette delle varie bande si potrebbero anche non riscrivere in quanto già salvate nella sessione precedente
+# MB: le color palette delle varie bande sono già state definite in precedenza
 dev.off()
 
+par(mfrow=c(2,1))
 plotRGB(p224r63_1988,r=3,g=2,b=1, stretch="Lin")
 plotRGB(p224r63_1988,r=4,g=3,b=2, stretch="Lin")
+dev.off()
 
-#plot delle immagini dei due diversi anni messe a confronto, utilizzando la banda del NIR sulla componente "r"
+# MB: immagini dei due diversi anni messe a confronto, utilizzando la banda del NIR sulla componente "r"
 par(mfrow=c(2,1))
 plotRGB(p224r63_1988,r=4,g=3,b=2, stretch="Lin")
 plotRGB(p224r63_2011,r=4,g=3,b=2, stretch="Lin")
 dev.off()
 
-#spectral indices - DVI
-dvi1988 <- p224r63_1988$B4_sre - p224r63_1988$B3_sre # creiamo la nuova immagine data dalla sottrazione, pixel per pixel, tra la banda dell'infrarosso e quella del rosso
-dvi2011 <- p224r63_2011$B4_sre - p224r63_2011$B3_sre # lo stesso per l'anno 2011
+
+#### spectral indices - DVI
+
+# MB: creiamo la nuova immagine data dalla sottrazione, pixel per pixel, tra la banda dell'infrarosso e quella del rosso
+dvi1988 <- p224r63_1988$B4_sre - p224r63_1988$B3_sre 
+dvi2011 <- p224r63_2011$B4_sre - p224r63_2011$B3_sre # MB: lo stesso per l'anno 2011
 
 # multitemporal analysis
-difdvi <- dvi2011 - dvi1988 # calcoliamo la differenza nell'indice per i due anni
+difdvi <- dvi2011 - dvi1988 # MB: calcoliamo la differenza nell'indice per i due anni
 cldifdvi <- colorRampPalette(c('red','white','blue'))(100)
 plot(difdvi, col=cldifdvi)
 
 
-par(mfrow=c(3,1)) # creiamo il multipanel con le immagini ad infrarosso dei due anni e la differenza nell'indice DVI
+par(mfrow=c(3,1)) # MB: creiamo il multipanel con le immagini ad infrarosso dei due anni e la differenza nell'indice DVI
 plotRGB(p224r63_1988,r=4,g=3,b=2, stretch="Lin")
 plotRGB(p224r63_2011,r=4,g=3,b=2, stretch="Lin")
 plot(difdvi, col=cldifdvi)
 dev.off()
 
-# Changing the grain (Resolution)
-p224r63_2011 # possiamo visualizzare la natura del file e la sua risoluzione (o grana)
 
-p224r63_2011lr <- aggregate(p224r63_2011, fact=10) # lr = low resolution con ingrandimento del pixel di 10 volte (media dei pixel originali contenuti nel nuovo pixel più grande)
+### Changing the grain (Resolution)
+
+p224r63_2011 # MB: possiamo visualizzare la natura del file e la sua risoluzione (o grana)
+
+p224r63_2011lr <- aggregate(p224r63_2011, fact=10) 
+# MB: lr = low resolution - ingrandimento del pixel di 10 volte
+# MB: -> media tra i valori dei pixel originali contenuti nel nuovo pixel più grande
+
 par(mfrow=c(2,1))
 plotRGB(p224r63_2011,r=4,g=3,b=2, stretch="Lin")
 plotRGB(p224r63_2011lr,r=4,g=3,b=2, stretch="Lin")
 
-p224r63_2011lr50 <- aggregate(p224r63_2011, fact=50) # ingrandimento di 50 volte
+p224r63_2011lr50 <- aggregate(p224r63_2011, fact=50) # MB: ingrandimento di 50 volte
 
-par(mfrow=c(3,1)) # mettiamo a confronto le varie risoluzioni sull'immagine del 2011
+par(mfrow=c(3,1)) # MB: mettiamo a confronto le varie risoluzioni sull'immagine del 2011
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011lr, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011lr50, r=4, g=3, b=2, stretch="Lin")
 
-dvi2011lr50 <- p224r63_2011lr50$B4_sre - p224r63_2011lr50$B3_sre # creiamo l'indice per il 2011 ma a bassa risoluzione
+# MB: creiamo l'indice per il 2011 ma a bassa risoluzione
+dvi2011lr50 <- p224r63_2011lr50$B4_sre - p224r63_2011lr50$B3_sre 
 plot(dvi2011lr50)
 
-p224r63_1988lr50 <- aggregate(p224r63_1988, fact=50) 
-dvi1988lr50 <- p224r63_1988lr50$B4_sre - p224r63_1988lr50$B3_sre
+p224r63_1988lr50 <- aggregate(p224r63_1988, fact=50) # MB: ingrandiamo 50 volte l'immagine del 1988
+dvi1988lr50 <- p224r63_1988lr50$B4_sre - p224r63_1988lr50$B3_sre # MB: indice DVI del 1988 a lr
+
+# MB: differenza tra gli indici dei due anni a bassa risoluzione
 difdvilr50 <- dvi2011lr50 - dvi1988lr50
 cldifdvi <- colorRampPalette(c('red','white','blue'))(100)
 plot(difdvilr50, col=cldifdvi)
 dev.off()
 
-par(mfrow=c(2,1)) # confrontiamo la variazione dell'indice nelle due risoluzioni
+par(mfrow=c(2,1)) # MB: confrontiamo la variazione dell'indice nelle due risoluzioni
 plot(difdvi, col=cldifdvi)
 plot(difdvilr50, col=cldifdvi)
 
@@ -470,81 +487,127 @@ plot(difdvilr50, col=cldifdvi)
 
 
 
-### R_code_multitemp.r  - analisi multitemporale di variazione della "land cover"
+### 5. R_code_multitemp.r  - analisi multitemporale di variazione della "land cover"
+
+
+library(raster)
+library(RStoolbox)
+library(ggplot2)
 
 setwd("C:/LAB")
-library(raster)
 
-defor1 <- brick("defor1.jpg") # carichiamo tutte le bande delle immagini 
+p224r63_2011 <- brick("p224r63_2011_masked.grd") # MB: brick -> carichiamo tutte le bande delle immagini 
+plotRGB(p224r63_2011,r=4,g=3,b=2, stretch="Lin")
+
+p224r63_2011c <- unsuperClass(p224r63_2011, nClasses=4) # MB: classifichiamo l'immagine, accorpando le bande dei pixel in diverse classi
+
+# p224r63_2011c
+# unsuperClass results
+
+# *************** Map ******************
+# $map
+# class      : RasterLayer 
+# dimensions : 478, 714, 341292  (nrow, ncol, ncell)
+# resolution : 1, 1  (x, y)
+# extent     : 0, 714, 0, 478  (xmin, xmax, ymin, ymax)
+# crs        : NA 
+# source     : memory
+# names      : layer 
+# values     : 1, 2  (min, max)
+
+
+plot(p224r63_2011c$map)
+clclass <- colorRampPalette(c('red', 'green', 'blue', 'black'))(100) 
+plot(p224r63_2011c$map, col=clclass)
+# MB: il processo di classificazione ha portato direttamente alla creazione della mappa clusterizzata
+# MB: -> $map
+
+p224r63_2011c <- unsuperClass(p224r63_2011, nClasses=2) # MB: cambiamo il numero delle classi
+plot(p224r63_2011c$map)
+
+
+
+### DEFORESTATION
+
+defor1 <- brick("defor1.jpg") 
 defor2 <- brick("defor2.jpg")
 defor1 
 # nella riga "names" compaiono i nome dei layer corrispondenti alle diverse bande
 # names      : defor1.1, defor1.2, defor1.3
 # defor1.1=NIR   defor1.2=red   defor1.3=green
 
-par(mfrow=c(1,2))
+par(mfrow=c(1,2)) # MB: confronto delle immagini ad infrarosso
 plotRGB(defor1, r=1, g=2, b=3, stretch="Lin")
 plotRGB(defor2, r=1, g=2, b=3, stretch="Lin")
 
-library(RStoolbox)
-d1c <- unsuperClass(defor1, nClasses=2) # classificazione della prima mappa
+d1c <- unsuperClass(defor1, nClasses=2) # MB: classificazione della prima mappa
 plot(d1c$map)
+# MB: gli argomenti a funzione sono solo il nome dell'immagine e il numero di classi finali
+
 cld1c <- colorRampPalette(c('green', 'black'))(100)
 plot(d1c$map, col=cld1c)
 
-d2c <- unsuperClass(defor2, nClasses=2) # classificazione della seconda mappa
+d2c <- unsuperClass(defor2, nClasses=2) # MB: classificazione della seconda mappa
 plot(d2c$map, col=cld1c)
 
 par(mfrow=c(2,1))
 plot(d1c$map, col=cld1c)
 plot(d2c$map, col=cld1c)
 
-freq(d1c$map) # frequenza delle classi 
+
+# MB: frequenza delle classi
+freq(d1c$map)  
 #      value  count
 # [1,]     1 303540
 # [2,]     2  37752
 # classe 1 = foresta, classe 2 = aree aperte
 # tot delle celle (pixel) di d1c = 303540 + 37752 = 341292
+
 totd1c = 303540 + 37752
-percent1 <- freq(d1c$map)*100/totd1c
+
+percent1 <- freq(d1c$map)*100/totd1c # MB: calcoliamo la percentuale di presenza delle classi
 percent1
 #             value   count
 # [1,] 0.0002930042 88.9385
 # [2,] 0.0005860085 11.0615
 # percentuali: foresta=89%, aree aperte=11%
 
-# facciamo lo stesso per la seconda immagine
+# MB: facciamo lo stesso per la seconda immagine
 freq(d2c$map)
 #      value  count
 # [1,]     1 164667
 # [2,]     2 178059
 # classe 1 = aree aperte, classe 2 = foresta
 # tot delle celle (pixel) di d2c = 164667 + 178059 = 342726
+
 totd2c = 164667 + 178059
+
 percent2 <- freq(d2c$map)*100/totd2c
 percent2
 #             value    count
 # [1,] 0.0002917783 48.04625
 # [2,] 0.0005835565 51.95375
 
-# per plottare i dati ottenuti creiamo un relativo dataset
-cover <- c("Agriculture","Forest") # creiamo la colonna "cover" assegnandoli i due valori delle due classi
-before <- c(11.1,88.9) # creiamo la seconda colonna "before" con i valori delle due classi nella prima mappa (defor1)
-after <- c(48.0,52.0) # colonna "after" con i valori delle classi nella seconda mappa (defor2)
-output <- data.frame(cover,before,after) # associamo i campi appena creati ad un dataframe (tabella) 
-View(output) # visualizziamo la tabella
+# MB: per plottare i dati ottenuti creiamo un relativo dataset
+cover <- c("Agriculture","Forest") # MB: creiamo l'oggetto "cover" assegnandoli i valori delle due classi
+before <- c(11.1,88.9) # MB: creiamo la colonna "before" con i valori delle due classi nella prima mappa (defor1)
+after <- c(48.0,52.0) # MB: colonna "after" con i valori delle classi nella seconda mappa (defor2)
+output <- data.frame(cover,before,after) # MB: associamo i campi appena creati ad un dataframe (tabella) 
+View(output) # MB: visualizziamo la tabella
 
-library(ggplot2)
-# plottiamo un istogramma delle percentuali di copertura di Foresta e Agricoltura sia prima che dopo l'attività di deforestazione
+
+# MB: plottiamo un istogramma delle percentuali di copertura di Foresta e Agricoltura sia prima che dopo l'attività di deforestazione
 ggplot(output, aes(x=cover, y=before, color=cover)) + geom_bar(stat="identity", fill="white")
 ggplot(output, aes(x=cover, y=after, color=cover)) + geom_bar(stat="identity", fill="white")
 
-install.packages("gridExtra") # pacchetto necessario per plottare i due grafici insieme (stessa cosa della funzione par) in quanto ggplot non lo permette
+install.packages("gridExtra") 
 library(gridExtra)
-# assegnamo un nome ad entrambi i ggplot
+# MB: pacchetto necessario per plottare i due grafici insieme (stessa cosa della funzione par) in quanto ggplot non lo permette
+
+# MB: assegnamo un nome ad entrambi i ggplot ed uno stesso limite percentuale di copertura (100%)
 grafico1 <- ggplot(output, aes(x=cover, y=before, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0, 100)
 grafico2 <- ggplot(output, aes(x=cover, y=after, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(0, 100)
-grid.arrange(grafico1, grafico2, nrow = 1) 
+grid.arrange(grafico1, grafico2, nrow = 1) # MB: multipanel di gridExtra
 
 
 
