@@ -171,56 +171,79 @@ plot(foram, carbon, col="green", cex=2, pch=19) # MB: plottando possiamo notare 
 
 ### R_code_point.patterns.r - codice per analisi dei POINT PATTERNS (strutture dei punti rilevati nello spazio - dati dall'esterno)
 
-install.packages("ggplot2")
-install.packages("spatstat")
 
-setwd("C:/LAB") # specifichiamo ad R la cartella di Working Directory (wd). Attenzione a scrivere l'indirizzo con lo slash corrispondente al taso 7
-covid <- read.table("covid_agg.csv",head=TRUE) # funzione per importare i dati del file, quindi visualizzare la tabella impostando la prima riga come contenente i nomi delle colonne 
+# install.packages("ggplot2")
+# install.packages("spatstat")
+
+library(ggplot2)
+
+# MB: specifichiamo ad R la cartella di Working Directory (wd)
+# MB: Attenzione a scrivere l'indirizzo con lo slash corrispondente al taso 7
+setwd("C:/LAB")  
+
+# MB: funzione per importare i dati del file, quindi visualizzare la tabella impostando la prima riga come contenente i nomi delle colonne 
+covid <- read.table("covid_agg.csv",head=TRUE) 
 head(covid) 
-plot(covid$country,covid$cases) # se facessimo prima attach(covid) potremmo non utilizzare il simbolo $ per specificare l'attribuzione della singola colonna al dataset: plot(country,cases)
-plot(covid$country,covid$cases,las=0) # le etichette sno sempre scritte in modo parallelo agli assi x e y del grafico. Proviamo quindi con valori diversi da 0..
-plot(covid$country,covid$cases,las=1) # le etichette dell'asse y diventano perpendicolari
-plot(covid$country,covid$cases,las=2) # lo stesso anche per le etichette dell'asse x
-plot(covid$country,covid$cases,las=3) # le etichette si mostrano sempre verticali
-plot(covid$country,covid$cases,las=3,cex.axis=0.7) # con cex.axis settiamo in modo diverso la grandezza delle etichette in modo da visualizzare tutti i nomi dei paesi
+plot(covid$country,covid$cases) 
+plot(covid$country,covid$cases,las=0) # MB: le etichette sono sempre scritte in modo parallelo agli assi x e y del grafico. 
+plot(covid$country,covid$cases,las=1) # MB: le etichette dell'asse y diventano perpendicolari
+plot(covid$country,covid$cases,las=2) # MB: lo stesso anche per le etichette dell'asse x
+plot(covid$country,covid$cases,las=3) # MB: le etichette si mostrano sempre verticali
+plot(covid$country,covid$cases,las=3,cex.axis=0.7) 
+# MB: con cex.axis settiamo in modo diverso la grandezza delle etichette in modo da visualizzare tutti i nomi dei paesi
+# MB: attach(covid) -> potremmo non utilizzare il simbolo $ per specificare l'attribuzione della singola colonna al dataset
 
-library(ggplot2) # richiamiamo il pacchetto
+
 data(mpg)
 head(mpg)
-ggplot(mpg, aes(x=displ,y=hwy)) + geom_point() # funzione ggplot in cui specifichiamo i dati (mpg), l'estetica, ovvero le variabili da plottare sugli assi, e il tipo di geometria a punti
-ggplot(mpg, aes(x=displ,y=hwy)) + geom_line() # cambiamo la geometira
+
+ggplot(mpg, aes(x=displ,y=hwy)) + geom_point() 
+# MB: funzione ggplot in cui specifichiamo i dati (mpg), l'estetica (le variabili da plottare sugli assi) e il tipo di geometria (punti)
+ggplot(mpg, aes(x=displ,y=hwy)) + geom_line() # MB: cambiamo la geometira
 ggplot(mpg, aes(x=displ,y=hwy)) + geom_polygon()
 
 # ggplot di covid
-ggplot(covid, aes(x=lon,y=lat,size=cases)) + geom_point() # plottiamo i punti dei paesi ponendo le cordinate come x e y e la grandezza dei punti in relazione al numero dei casi riscontrati
+ggplot(covid, aes(x=lon,y=lat,size=cases)) + geom_point() 
+# MB: plottiamo i punti dei paesi ponendo le cordinate come x e y e la grandezza dei punti in relazione al numero dei casi riscontrati
+
 
 ##### DENSITY
-library(spatstat)
-attach(covid) # specifichiamo il database in cui sono presenti le variabili longitudine e latitudine
-covids <- ppp(lon, lat, c(-180,180), c(-90,90)) # creiamo l'oggetto covidS che, a differenza dell'altro, utilizziamo per l'analisi di densità
-d <- density(covids) # chiamiamo "d" il risultato dell'analisi di densità su covids
-plot(d) # plottiamo il grafico di densità
-points(covids, pch=19) # inseriamo i punti dei singoli paesi insieme alla mappa della densità
+
+# library(spatstat)
+
+# MB: specifichiamo il database in cui sono presenti le variabili longitudine e latitudine
+attach(covid) 
+
+# MB: creiamo il point pattern "covids" per l'anilisi di densità 
+covids <- ppp(lon, lat, c(-180,180), c(-90,90)) 
+d <- density(covids) # MB: svolgiamo l'analisi di densità su covids
+plot(d) # MB: plottiamo il grafico di densità
+points(covids, pch=19) # MB: inseriamo i punti dei singoli paesi insieme alla mappa della densità
+
 
 ###### COASTLINES
-library(spatstat)
-library(rgdal)
+
+# library(spatstat)
+# library(rgdal)
 
 setwd("C:/LAB")
-load("point.patterns.RData") # se si vuole caricare il file RData precedentemente sviluppato
+load("point.patterns.RData") # MB: caricare il file RData precedentemente sviluppato
 
-coastlines <- readOGR("ne_10m_coastline.shp") #leggiamo i dati sulle coastlines messe all'interno della cartella LAB
+coastlines <- readOGR("ne_10m_coastline.shp") # MB: leggiamo i dati sulle coastlines messe all'interno della cartella LAB
 
+# MB: plottiamo, insieme ai punti e alla densità (add=T), lo shapefile riguardante le coste a livello mondiale
 plot(d)
 points(covids,pch=19,cex=0.5)
-plot(coastlines, col="yellow", add=T) # plottiamo, insieme ai punti e alla densità (add=T), lo shapefile riguardante le coste a livello mondiale
+plot(coastlines, col="yellow", add=T) 
 
-cl <- colorRampPalette(c('yellow','orange','red'))(100) # identifichiamo una scala di colori definita con l'oggetto cl. (100) sta ad indicare il numero di gradazioni per singolo colore
-plot(d,col=cl) # riplottiamo d con la scala di colori scelta
+# MB: identifichiamo una scala di colori definita con l'oggetto cl. (100) sta ad indicare il numero di gradazioni per singolo colore
+cl <- colorRampPalette(c('yellow','orange','red'))(100) 
+plot(d,col=cl) # MB: riplottiamo d con la scala di colori scelta
 points(covids,pch=19,cex=0.5)
 plot(coastlines, col="blue", add=T)
 
-# Exercise 22/04/20
+# Exercise 22/04/20 - riplottiamo i dati dell'ultima esercitazione
+
 library(spatstat)
 library(rgdal) 
 setwd("C:/LAB")
@@ -233,18 +256,25 @@ plot(d, col=cl2, main="density")
 points(covids)
 plot(coastlines, add=T)
 
+
 ###### interpolation
+
+# MB: "etichettiamo" il point pattern covids con i valori della colonna cases del dataset covid
 marks(covids) <- covid$cases
-i <- Smooth(covids) # i=interpolazione, smooth permette di stimare i valori dove questi non sono stati misurati creando una mappa di tipo continuo
+i <- Smooth(covids) # i=interpolazione
+# MB: smooth permette di stimare i valori dove questi non sono stati misurati creando una mappa di tipo continuo
 plot(i)
 
 plot(i, col=cl2, main="Interpolation: estimated number of cases")
 points(covids)
 plot(coastlines, add=T)
 
+
 # MAPPA FINALE - Multipanel
+
 par(mfrow=c(2,1))
 
+# MB: plottiamo insieme densità e interpolazione
 plot(d, col=cl2, main="density")
 points(covids)
 plot(coastlines, add=T)
@@ -254,17 +284,20 @@ points(covids)
 plot(coastlines, add=T)
 dev.off()
 
+
 ##### DATI DI SAN MARINO
-load("Tesi.RData") # carichiamo il dataset
-ls() # ispezioniamo la tabella del data set
+
+load("Tesi.RData") # MB: carichiamo il dataset
+ls() # MB: ispezioniamo gli oggetti contenuti nel data set
 head(Tesi)
-summary(Tesi) # visualizziamo i range di latitudine e longitudine scritti in forma decimale e non in gradi sessagesimali 
+summary(Tesi) # MB: range di latitudine e longitudine scritti in forma decimale e non in gradi sessagesimali 
+
 attach(Tesi)
 
 # X varia da 12.42 a 12.46
 # Y varia da 43.91 a 43.94
 # pointpattern: x,y,c(xmin,xmax),c(ymin,ymax)
-Tesippp <- ppp(Longitude, Latitude, c(12.41,12.47), c(43.9,43.95)) # lasciamo dei margini negli intervalli
+Tesippp <- ppp(Longitude, Latitude, c(12.41,12.47), c(43.9,43.95)) # MB: lasciamo dei margini negli intervalli
 
 dT <- density(Tesippp)
 plot(dT)
@@ -275,12 +308,13 @@ interpol <- Smooth(Tesippp)
 plot(interpol)
 points(Tesippp)
 
-library(rgdal)
+# library(rgdal)
+
 sanmarino <- readOGR("San_Marino.shp")
 plot(sanmarino)
 plot(interpol, add=T)
 points(Tesippp)
-plot(sanmarino, add=T) # risovrapponiamo i confini di SanMarino nel plot
+plot(sanmarino, add=T) # risovrapponiamo i confini di San Marino nel plot
 
 par(mfrow=c(2,1))
 plot(dT, main="Density of points")
@@ -817,25 +851,41 @@ boxplot(snow.multitemp.italy, horizontal=T, outline=F)
 ### Species Distribution Modelling
 
 # install.packages("sdm")
+
 library(sdm)
 library(raster)
 library(rgdal)
 
-file <- system.file("external/species.shp", package="sdm") # carichiamo il file attraverso la funzione system.file
-species <- shapefile(file) 
-species # guardiamo di cosa si tratta il dataset
-species$Occurrence # interroghiamo l'unica variabile del dataset
-# vediamo un elenco di 0 e 1, i quali dovrebbero corrispondere a valori di presenza/assenza all'interno del dataset, disposti secondo il sdr UTM, zona 30
+# MB: importiamo il file di sistema "species.shp" (shapefile) contenuto nel pacchetto sdm
+# MB: essendo un file si sistema utilizziamo la funzione system.file
+file <- system.file("external/species.shp", package="sdm") 
+species <- shapefile(file) # MB: carichiamo la parte grafica del file con la funzione "shapefile"
+
+species # MB: interroghiamo il dataset -> dataframe di punti spaziali
+
+# class       : SpatialPointsDataFrame 
+# features    : 200 
+# extent      : 110112, 606053, 4013700, 4275600  (xmin, xmax, ymin, ymax)
+# crs         : +proj=utm +zone=30 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+# variables   : 1
+# names       : Occurrence 
+# min values  :          0 
+# max values  :          1 
+
+species$Occurrence # MB: interroghiamo l'unica variabile del dataset
+# MB: vediamo un elenco di 0 e 1, i quali dovrebbero corrispondere a valori di presenza/assenza all'interno del dataset
+# MB: i numeri sono disposti secondo il sdr UTM, zona 30
 plot(species)
-# vengono visualizzati sia i punti di campionamento di presenza della specie, sia quelli di assenza.
+# MB: vengono visualizzati sia i punti di campionamento di presenza della specie, sia quelli di assenza.
 
-plot(species[species$Occurrence == 1,],col='blue',pch=16) # identificahiamo solo le presenze, colorandole di blu
-points(species[species$Occurrence == 0,],col='red',pch=16) # coloriamo in rosso le assenze, aggiungendo i punti nel precendente plot
+plot(species[species$Occurrence == 1,],col='blue',pch=16) # MB: identificahiamo solo le presenze, colorandole di blu
+points(species[species$Occurrence == 0,],col='red',pch=16) # MB: coloriamo in rosso le assenze, aggiungendo i punti nel precendente plot
 
-# aggiungiamo delle variabili ambientali 
-path <- system.file("external", package="sdm") # carichiamo i file presenti nella cartella external nel pacchetto sdm
-lst <- list.files(path=path,pattern='asc$',full.names = T) # creiamo una lista dei file asci presenti dentro path 
-lst # controlliamo i livelli/layer presenti
+### MB: aggiungiamo delle variabili ambientali (PREDITTORI)
+
+path <- system.file("external", package="sdm") # MB: carichiamo i file presenti nella cartella external nel pacchetto sdm
+lst <- list.files(path=path,pattern='asc$',full.names = T) # MB: creiamo una lista dei file asci presenti in external ("path") 
+lst # MB: controlliamo i livelli/layer presenti
 #[1] "C:/Users/Marco Bergami/Documents/R/win-library/3.5/sdm/external/elevation.asc"
 #[2] "C:/Users/Marco Bergami/Documents/R/win-library/3.5/sdm/external/precipitation.asc"
 #[3] "C:/Users/Marco Bergami/Documents/R/win-library/3.5/sdm/external/temperature.asc"  
@@ -847,26 +897,30 @@ plot(preds, col=cl)
 
 plot(preds$elevation, col=cl) # plottiamo solamente l'elevazione
 points(species[species$Occurrence == 1,], pch=16)
-# deduciamo che la specie è maggiormente presente con basse altitudini
+# MB: deduciamo che la specie è maggiormente presente con basse altitudini
 
 plot(preds$temperature, col=cl)
 points(species[species$Occurrence == 1,], pch=16)
-# deduciamo che la specie è maggiormente presente con alte temperature
+# MB: deduciamo che la specie è maggiormente presente con alte temperature
 
 plot(preds$precipitation, col=cl)
 points(species[species$Occurrence == 1,], pch=16)
-# deduciamo che la specie è maggiormente presente con precipitazioni intermedie
+# MB: deduciamo che la specie è maggiormente presente con precipitazioni intermedie
 
 plot(preds$vegetation, col=cl)
 points(species[species$Occurrence == 1,], pch=16)
-# deduciamo che la specie è maggiormente presente con copertura vegetazionele abbastanza forte
+# MB: deduciamo che la specie è maggiormente presente con copertura vegetazionele abbastanza forte
 
-# Generalized Linear Model
+### Generalized Linear Model
 
+# MB: creiamo un oggetto che contenga i dati del modello, cioè i "train" (insieme dei punti di test/campionamento) e i predittori
 d <- sdmData(train=species, predictors=preds)
-# train = insieme dei punti di campionamento
-m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation, data=d, methods='glm') # specifichiamo il modello
-p1 <- predict(m1, newdata=preds) # specifichiamo la previsione, indicando il modello e l'insieme dei predittori
+
+# MB: specifichiamo il modello
+# MB: modello lineare con y = occurence e x,z,... le altre varibili ambientali
+m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation, data=d, methods='glm') 
+
+p1 <- predict(m1, newdata=preds) # MB: svolgiamo la previsione, indicando il modello e l'insieme dei predittori
 plot(p1, col=cl)
 points(species[species$Occurrence == 1,], pch=16)
  
@@ -880,6 +934,8 @@ points(species[species$Occurrence == 1,], pch=16)
 
 
 
+
+### Exam project
 
 
 
