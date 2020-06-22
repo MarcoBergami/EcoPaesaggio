@@ -1,17 +1,17 @@
 #########    R_code_exam.r    ##########
 
 # 1. R_code_first.r   
-# 2. R_code_spatial.r   
-# 3. R_code_spatial2.r
-# 4. R_code_point_pattern   
-# 5. R_code_teleril.r   
-# 6. R_code_landcover.r   
-# 7. R_code_multitemp.r   
-# 8. R_code_multitemp_NO2.r   
-# 9. R_code_snow.r   
-# 10. R_code_patches.r   
-# 11. R_code_crop.r
-# 12. Species Distribution Modelling
+# 2. R_code_spatial.r + R_code_spatial2.r
+# 3. R_code_point_pattern
+# 4. R_code_teleril.r 
+# 5. R_code_landcover.r
+# 6. R_code_multitemp.r
+# 7. R_code_multitemp_NO2.r
+# 8. R_code_snow.r 
+# 9. R_code_patches.r 
+# 10. R_code_crop.r
+# 11. Species Distribution Modelling
+# 12. Exam projec
 
 
 
@@ -487,7 +487,7 @@ plot(difdvilr50, col=cldifdvi)
 
 
 
-### 5. R_code_multitemp.r  - analisi multitemporale di variazione della "land cover"
+### 5. R_code_landcover.r 
 
 
 library(raster)
@@ -527,7 +527,17 @@ plot(p224r63_2011c$map)
 
 
 
-### DEFORESTATION
+
+
+#################################################################################################################
+#################################################################################################################
+
+
+
+
+
+
+### 6. R_code_multitemp.r  - analisi multitemporale di variazione della "land cover" - DEFORESTATION
 
 defor1 <- brick("defor1.jpg") 
 defor2 <- brick("defor2.jpg")
@@ -622,7 +632,7 @@ grid.arrange(grafico1, grafico2, nrow = 1) # MB: multipanel di gridExtra
 
 
 
-### R_code_multitemp_NO2.r - R CODE for analysing NO2 data from ESA - January to March 
+### 7. R_code_multitemp_NO2.r - R CODE for analysing NO2 data from ESA - January to March 
 
 setwd("C:/LAB")
 
@@ -717,7 +727,7 @@ boxplot(EN, horizontal=T, outline=F) # MB: eliminiamo anche i valori estremi ("o
 
 
 
-### R_code_snow.r - Snow cover analysis through Copernicus images
+### 8. R_code_snow.r - Snow cover analysis through Copernicus images
 
 setwd("C:/LAB")
 install.packages("ncdf4") # MB: pacchetto necessario per caricare immagini .nc
@@ -769,7 +779,7 @@ plot(predicted.snow.2025.norm, col=cl)
 
 
 
-### R_code_patches.r
+### 9. R_code_patches.r
 
 setwd("C:/LAB")
 
@@ -844,7 +854,7 @@ ggplot(output, aes(x=time, y=npatches, color="red")) + geom_bar(stat="identity",
 
 
 
-### R_code_crop.r
+### 10. R_code_crop.r
 
 setwd("C:/LAB/snow")
 
@@ -911,7 +921,7 @@ boxplot(snow.multitemp.italy, horizontal=T, outline=F)
 
 
 
-### Species Distribution Modelling
+### 11. Species Distribution Modelling
 
 # install.packages("sdm")
 
@@ -998,7 +1008,7 @@ points(species[species$Occurrence == 1,], pch=16)
 
 
 
-### Exam project
+### 12. Exam project
 
 
 
