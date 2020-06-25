@@ -1011,6 +1011,44 @@ points(species[species$Occurrence == 1,], pch=16)
 ### 12. Exam project
 
 
+setwd("C:/LAB/SWI")
+
+library(raster)
+library(ncdf4)
+
+rlist = list.files(pattern = ".nc") # chiamiamo rlist l'intero intervallo di file con estensione .nc presenti all'interno della cartella "SWI"
+# utilizziamo la funzione "lapply", e più in particolare la funzione raster al suo interno, per caricare i file di rlist
+listafinale = lapply(rlist, raster)
+swi <- stack(listafinale)
+
+cl <- colorRampPalette(c('white','blue'))(100) # alte % = blu, basse % = bianco
+plot(swi, col=cl) # terre emerse completamente bianche
+# scala sbagliata, occorre un argomento a funzione che ne limiti l'estensione per rendere visibili le variazioni spaziali
+
+plot(swi, col=cl, zlim=c(0,10))
+
+# confronto tra le gli estremi dell'intervallo temporale 15/05/19 - 15/05/2020
+
+par(mfrow=c(1,2))
+plot(swi$Surface.State.Flag.1,col=cl, zlim=c(0,6))
+plot(swi$Surface.State.Flag.13,col=cl, zlim=c(0,6))
+
+# confronto tra agosto (15/08/2019 - Surface.State.Flag.4 ) e gennaio (15/01/2020 - Surface.State.Flag.9)
+
+par(mfrow=c(1,2))
+plot(swi$Surface.State.Flag.4,col=cl, zlim=c(0,6))
+plot(swi$Surface.State.Flag.9,col=cl, zlim=c(0,6))
+
+# differenza tra agosto (15/08/2019 - Surface.State.Flag.4 ) e gennaio (15/01/2020 - Surface.State.Flag.9)
+
+cldif <- colorRampPalette(c('red','white','blue'))(100)
+difswi <- swi$Surface.State.Flag.9 - swi$Surface.State.Flag.4
+plot(difswi, col=cldif)
+
+
+
+
+
 
 
 
