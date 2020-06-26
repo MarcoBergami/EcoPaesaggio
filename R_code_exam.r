@@ -1015,6 +1015,7 @@ setwd("C:/LAB/SWI")
 
 library(raster)
 library(ncdf4)
+library(gridExtra)
 
 rlist = list.files(pattern = ".nc") # chiamiamo rlist l'intero intervallo di file con estensione .nc presenti all'interno della cartella "SWI"
 # utilizziamo la funzione "lapply", e più in particolare la funzione raster al suo interno, per caricare i file di rlist
@@ -1030,20 +1031,117 @@ plot(swi, col=cl, zlim=c(0,10))
 # confronto tra le gli estremi dell'intervallo temporale 15/05/19 - 15/05/2020
 
 par(mfrow=c(1,2))
-plot(swi$Surface.State.Flag.1,col=cl, zlim=c(0,6))
-plot(swi$Surface.State.Flag.13,col=cl, zlim=c(0,6))
+plot(swi$Surface.State.Flag.1,col=cl, zlim=c(0,6), main="15/05/2019")
+plot(swi$Surface.State.Flag.13,col=cl, zlim=c(0,6), main="15/05/2020)
+# situazione simile -> ciclicità annuale
 
 # confronto tra agosto (15/08/2019 - Surface.State.Flag.4 ) e gennaio (15/01/2020 - Surface.State.Flag.9)
 
 par(mfrow=c(1,2))
-plot(swi$Surface.State.Flag.4,col=cl, zlim=c(0,6))
-plot(swi$Surface.State.Flag.9,col=cl, zlim=c(0,6))
+plot(swi$Surface.State.Flag.4,col=cl, zlim=c(0,6), main="15/05/2019")
+plot(swi$Surface.State.Flag.9,col=cl, zlim=c(0,6), main="15/01/2020")
 
 # differenza tra agosto (15/08/2019 - Surface.State.Flag.4 ) e gennaio (15/01/2020 - Surface.State.Flag.9)
 
 cldif <- colorRampPalette(c('red','white','blue'))(100)
 difswi <- swi$Surface.State.Flag.9 - swi$Surface.State.Flag.4
 plot(difswi, col=cldif)
+
+# classificazione
+library(RStoolbox)
+
+swi.15.08 <- unsuperClass(swi$Surface.State.Flag.4, nClasses=4) # classificazione del 15/08/2019
+plot(swi.15.08$map, col=cldif)
+
+swi.15.01 <- unsuperClass(swi$Surface.State.Flag.9, nClasses=4) # classificazione del 15/01/2020
+plot(swi.15.01$map, col=cldif)
+
+clc <- colorRampPalette(c('red','green','light blue','blue'))(100)
+
+par(mfrow=c(2,2))
+plot(swi.15.08$map, col=clc)
+plot(swi$Surface.State.Flag.4,col=cl, zlim=c(0,6), main="15/08/2020")
+plot(swi.15.01$map, col=clc)
+plot(swi$Surface.State.Flag.9,col=cl, zlim=c(0,6), main="15/01/2020")
+
+# il numero delle classi nelle due mappe non corrisponde alla medesima classificazione ordinata degli intervalli del SWI
+# tranne che per i mari e gli oceani
+
+## 15/18
+# classe 1: rosso = valori bassi
+# classe 2: verde = mari/oceani
+# classe 3: azzurro = valori medi
+# classe 4: blu = valori alti
+
+## 15/01
+# classe 1: rosso = valori medi
+# classe 2: verde = mari/oceani
+# classe 3: azzurro = valori alti
+# classe 4: blu = valori bassi
+
+# riclassifichiamo per eliminare la classe 2 (verde) dei mari/oceani
+
+swi.15.08r <- reclassify(swi.15.08$map, cbind(2, NA))
+swi.15.01r <- reclassify(swi.15.01$map, cbind(2, NA))
+
+par(mfrow=c(1,2))
+plot(swi.15.08r, col=clc)
+plot(swi.15.01r, col=clc)
+
+# frequenza delle classi
+
+freq(swi.15.08r)
+
+#     value    count
+#[1,]     1  1361264 -> B
+#[2,]     3 12149265 -> M
+#[3,]     4     4203 -> A
+#[4,]    NA 14797076
+
+# tot di celle = 1361264 + 12149265 + 4203 = 13.514.732
+totswi.15.08r = 1361264 + 12149265 + 4203
+
+percentswi.15.08r <- freq(swi.15.08r)*100/totswi.15.08r # percentuale
+
+percentswi.15.08r
+#            value       count
+#[1,] 7.399333e-06  10.0724454 -> 10.07 %
+#[2,] 2.219800e-05  89.8964552 -> 89.90 %
+#[3,] 2.959733e-05   0.0310994 -> 0.03 %
+#[4,]           NA 109.4884900
+
+
+freq(swi.15.01r)
+
+#     value    count
+#[1,]     1  5735788 -> M
+#[2,]     3  6417680 -> A
+#[3,]     4  1361264 -> B
+#[4,]    NA 14797076
+
+# tot di celle = 5735788 + 6417680 + 1361264 = 13.514.732‬
+totswi.15.01r = 5735788 + 6417680 + 1361264
+
+percentswi.15.01r <- freq(swi.15.01r)*100/totswi.15.01r # percentuale
+
+#            value     count
+#[1,] 7.399333e-06  42.44100 -> 42.44 %
+#[2,] 2.219800e-05  47.48655 -> 47.49 %
+#[3,] 2.959733e-05  10.07245 -> 10.07 %
+#[4,]           NA 109.48849
+
+# per plottare i dati ottenuti creiamo un relativo dataset
+LevelSWI <- c("Low","Medium","High") # creo il campo realtivo al livello dell'indice
+agosto19 <- c(10.07,89.90,0.03) # campo con i valori delle tre classi nella prima mappa (swi.15.08r)
+gennaio20 <- c(10.07,42.44,47.49) # campo con i valori delle classi nella seconda mappa (swi.15.01r)
+output <- data.frame(LevelSWI,agosto19,gennaio20) # associamo i campi appena creati ad un dataframe (tabella) 
+View(output) # visualizziamo la tabella
+
+# multipanel istogramma finale
+ist.agosto <- ggplot(output, aes(x=LevelSWI, y=agosto19, color=LevelSWI)) + geom_bar(stat="identity", fill="white") + ylim(0, 100)
+ist.gennaio <- ggplot(output, aes(x=LevelSWI, y=gennaio20, color=LevelSWI)) + geom_bar(stat="identity", fill="white") + ylim(0, 100)
+grid.arrange(ist.agosto, ist.gennaio, nrow = 1) 
+
 
 
 
