@@ -11,7 +11,7 @@
 # 9. R_code_patches.r 
 # 10. R_code_crop.r
 # 11. Species Distribution Modelling
-# 12. Exam projec
+# 12. Exam project
 
 
 
