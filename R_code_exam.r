@@ -303,7 +303,7 @@ dT <- density(Tesippp)
 plot(dT)
 points(Tesippp)
 
-marks(Tesippp) <- Species_richness # associamo i valori del campo "ricchezza di specie" al pointpattern appena creato
+marks(Tesippp) <- Species_richness # MB: associamo i valori del campo "ricchezza di specie" al pointpattern appena creato
 interpol <- Smooth(Tesippp)
 plot(interpol)
 points(Tesippp)
@@ -314,7 +314,7 @@ sanmarino <- readOGR("San_Marino.shp")
 plot(sanmarino)
 plot(interpol, add=T)
 points(Tesippp)
-plot(sanmarino, add=T) # risovrapponiamo i confini di San Marino nel plot
+plot(sanmarino, add=T) # MB: risovrapponiamo i confini di San Marino nel plot
 
 par(mfrow=c(2,1))
 plot(dT, main="Density of points")
