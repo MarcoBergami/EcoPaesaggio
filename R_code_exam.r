@@ -1015,6 +1015,7 @@ setwd("C:/LAB/SWI")
 
 library(raster)
 library(ncdf4)
+library(RStoolbox)
 library(gridExtra)
 
 rlist = list.files(pattern = ".nc") # chiamiamo rlist l'intero intervallo di file con estensione .nc presenti all'interno della cartella "SWI"
@@ -1022,17 +1023,19 @@ rlist = list.files(pattern = ".nc") # chiamiamo rlist l'intero intervallo di fil
 listafinale = lapply(rlist, raster)
 swi <- stack(listafinale)
 
-cl <- colorRampPalette(c('white','blue'))(100) # alte % = blu, basse % = bianco
-plot(swi, col=cl) # terre emerse completamente bianche
-# scala sbagliata, occorre un argomento a funzione che ne limiti l'estensione per rendere visibili le variazioni spaziali
+cl <- colorRampPalette(c('white','blue'))(100) # alti valori = blu, bassi valori = bianco
+plot(swi, col=cl) 
+# non si notano grandi variazioni ad occhio, molto territorio compare bianco
 
-plot(swi, col=cl, zlim=c(0,10))
+# se limitiamo la legenda (0,6) è meglio possibile vedere le variazioni dell'indice nelle parti precedentemente colorate di bianco
+# le zone blu variano invece intorno ai valori più alti della legenda (~ 250), ma non subiscono forti variazioni durante l'anno
+plot(swi, col=cl, zlim=c(0,6))
 
 # confronto tra le gli estremi dell'intervallo temporale 15/05/19 - 15/05/2020
 
 par(mfrow=c(1,2))
 plot(swi$Surface.State.Flag.1,col=cl, zlim=c(0,6), main="15/05/2019")
-plot(swi$Surface.State.Flag.13,col=cl, zlim=c(0,6), main="15/05/2020)
+plot(swi$Surface.State.Flag.13,col=cl, zlim=c(0,6), main="15/05/2020")
 # situazione simile -> ciclicità annuale
 
 # confronto tra agosto (15/08/2019 - Surface.State.Flag.4 ) e gennaio (15/01/2020 - Surface.State.Flag.9)
@@ -1048,7 +1051,6 @@ difswi <- swi$Surface.State.Flag.9 - swi$Surface.State.Flag.4
 plot(difswi, col=cldif)
 
 # classificazione
-library(RStoolbox)
 
 swi.15.08 <- unsuperClass(swi$Surface.State.Flag.4, nClasses=4) # classificazione del 15/08/2019
 plot(swi.15.08$map, col=cldif)
@@ -1064,8 +1066,7 @@ plot(swi$Surface.State.Flag.4,col=cl, zlim=c(0,6), main="15/08/2020")
 plot(swi.15.01$map, col=clc)
 plot(swi$Surface.State.Flag.9,col=cl, zlim=c(0,6), main="15/01/2020")
 
-# il numero delle classi nelle due mappe non corrisponde alla medesima classificazione ordinata degli intervalli del SWI
-# tranne che per i mari e gli oceani
+# i mari e gli oceani vengono sempre rappresentati dalla classe 2 (verde)
 
 ## 15/18
 # classe 1: rosso = valori bassi
@@ -1074,10 +1075,10 @@ plot(swi$Surface.State.Flag.9,col=cl, zlim=c(0,6), main="15/01/2020")
 # classe 4: blu = valori alti
 
 ## 15/01
-# classe 1: rosso = valori medi
+# classe 1: rosso = valori bassi
 # classe 2: verde = mari/oceani
-# classe 3: azzurro = valori alti
-# classe 4: blu = valori bassi
+# classe 3: azzurro = valori medi
+# classe 4: blu = valori alti
 
 # riclassifichiamo per eliminare la classe 2 (verde) dei mari/oceani
 
@@ -1114,9 +1115,9 @@ percentswi.15.08r
 freq(swi.15.01r)
 
 #     value    count
-#[1,]     1  5735788 -> M
-#[2,]     3  6417680 -> A
-#[3,]     4  1361264 -> B
+#[1,]     1  5735788 -> B
+#[2,]     3  6417680 -> M
+#[3,]     4  1361264 -> A
 #[4,]    NA 14797076
 
 # tot di celle = 5735788 + 6417680 + 1361264 = 13.514.732‬
@@ -1130,10 +1131,10 @@ percentswi.15.01r <- freq(swi.15.01r)*100/totswi.15.01r # percentuale
 #[3,] 2.959733e-05  10.07245 -> 10.07 %
 #[4,]           NA 109.48849
 
-# per plottare i dati ottenuti creiamo un relativo dataset
-LevelSWI <- c("Low","Medium","High") # creo il campo realtivo al livello dell'indice
+# per plottare i dati ottenuti creiamo un relativo dataframe/tabella
+LevelSWI <- c("Low","Medium","High") # creo il campo relativo al livello dell'indice
 agosto19 <- c(10.07,89.90,0.03) # campo con i valori delle tre classi nella prima mappa (swi.15.08r)
-gennaio20 <- c(10.07,42.44,47.49) # campo con i valori delle classi nella seconda mappa (swi.15.01r)
+gennaio20 <- c(42.44,47.49,10.07) # campo con i valori delle classi nella seconda mappa (swi.15.01r)
 output <- data.frame(LevelSWI,agosto19,gennaio20) # associamo i campi appena creati ad un dataframe (tabella) 
 View(output) # visualizziamo la tabella
 
