@@ -230,6 +230,7 @@ setwd("C:/LAB")
 load("point.patterns.RData") # MB: caricare il file RData precedentemente sviluppato
 
 coastlines <- readOGR("ne_10m_coastline.shp") # MB: leggiamo i dati sulle coastlines messe all'interno della cartella LAB
+# MB: funzione readOGR per caricare file vettoriali, quì uno shapefile
 
 # MB: plottiamo, insieme ai punti e alla densità (add=T), lo shapefile riguardante le coste a livello mondiale
 plot(d)
